@@ -3,7 +3,7 @@ name = "svg-asteroids"
 license = "MIT"
 licence-file = "LICENSE.MIT"
 version = "0.1.0"
-authors = ["Igor null <m1el.2027@gmail.com>"]
+authors = ["Igor null <m1el.2027@gmail.com>", "Avery Radmacher <avery.radmacher@gmail.com>"]
 
 [lib]
 crate-type=["cdylib"]
