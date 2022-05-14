@@ -1,6 +1,6 @@
 extern crate rand;
 
-pub use self::rand::{StdRng, Rng, SeedableRng};
+pub use self::rand::{Rng, SeedableRng, StdRng};
 
 extern "C" {
     fn js_fill_rand(ptr: *mut u8, len: usize) -> usize;

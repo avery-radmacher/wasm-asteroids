@@ -1,5 +1,5 @@
-use ::math::{Vec2D};
-use ::game::{InputIndex, Inputs, Config};
+use game::{Config, InputIndex, Inputs};
+use math::Vec2D;
 
 #[derive(Debug)]
 pub struct Ship {
@@ -30,7 +30,10 @@ impl Ship {
         self.angular_speed -= angular_drag * config.delta_t;
 
         // inputs
-        let accel_dir = match (inputs.is_down(InputIndex::Forward), inputs.is_down(InputIndex::Backward)) {
+        let accel_dir = match (
+            inputs.is_down(InputIndex::Forward),
+            inputs.is_down(InputIndex::Backward),
+        ) {
             (true, false) => 1.0,
             (false, true) => -1.0,
             _ => 0.0,
@@ -41,7 +44,10 @@ impl Ship {
             self.speed += accel;
         }
 
-        let rotate_dir = match (inputs.is_down(InputIndex::Left), inputs.is_down(InputIndex::Right)) {
+        let rotate_dir = match (
+            inputs.is_down(InputIndex::Left),
+            inputs.is_down(InputIndex::Right),
+        ) {
             (true, false) => -1.0,
             (false, true) => 1.0,
             _ => 0.0,
@@ -56,7 +62,10 @@ impl Ship {
         if speed > config.speed_limit {
             self.speed = self.speed.scale(1.0 * config.speed_limit / speed);
         }
-        self.angular_speed = self.angular_speed.min(config.angular_limit).max(-config.angular_limit);
+        self.angular_speed = self
+            .angular_speed
+            .min(config.angular_limit)
+            .max(-config.angular_limit);
 
         // constrain position
         self.pos.clip(&config.field_size);

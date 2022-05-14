@@ -1,4 +1,4 @@
-use ::math::Vec2D;
+use math::Vec2D;
 // From Real-Time Collision Detection by Christer Ericson,
 // published by Morgan Kaufmann Publishers, © 2005 Elsevier Inc
 // p.139, ClosestPtPointTriangle
@@ -14,14 +14,20 @@ fn closest_triangle_point(p: Vec2D, a: Vec2D, b: Vec2D, c: Vec2D) -> Vec2D {
     // P’ = A + t*AC, s = tnom/(tnom+tdenom)
     let tnom = (p - a).dot(ac);
     let tdenom = (p - c).dot(a - c);
-    if snom <= 0.0 && tnom <= 0.0 { return a; } // Vertex region early out
-    // Compute parametric position u for projection P’ of P on BC,
-    // P’ = B + u*BC, u = unom/(unom+udenom)
+    if snom <= 0.0 && tnom <= 0.0 {
+        return a;
+    } // Vertex region early out
+      // Compute parametric position u for projection P’ of P on BC,
+      // P’ = B + u*BC, u = unom/(unom+udenom)
     let unom = (p - b).dot(bc);
     let udenom = (p - c).dot(b - c);
-    if sdenom <= 0.0 && unom <= 0.0 { return b; } // Vertex region early out
-    if tdenom <= 0.0 && udenom <= 0.0 { return b; } // Vertex region early out
-    // P is outside (or on) AB if the triple scalar product [N PA PB] <= 0
+    if sdenom <= 0.0 && unom <= 0.0 {
+        return b;
+    } // Vertex region early out
+    if tdenom <= 0.0 && udenom <= 0.0 {
+        return b;
+    } // Vertex region early out
+      // P is outside (or on) AB if the triple scalar product [N PA PB] <= 0
     let n = (b - a).cross(c - a);
     let vc = n * (a - p).cross(b - p);
     // If P outside AB and within feature region of AB,
@@ -57,5 +63,5 @@ pub fn test_circle_triangle(center: Vec2D, radius: f64, a: Vec2D, b: Vec2D, c: V
 
 pub fn test_circle_point(center: Vec2D, radius: f64, point: Vec2D) -> bool {
     let diff = center - point;
-    return diff.dot(diff) <= radius * radius
+    return diff.dot(diff) <= radius * radius;
 }

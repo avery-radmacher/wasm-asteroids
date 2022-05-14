@@ -1,4 +1,4 @@
-use std::ops::{Add, Sub, SubAssign, AddAssign};
+use std::ops::{Add, AddAssign, Sub, SubAssign};
 
 pub fn clip(x: f64, max: f64) -> f64 {
     x - (x / max).floor() * max
