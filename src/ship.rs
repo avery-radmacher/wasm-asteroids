@@ -1,5 +1,5 @@
-use game::{Config, InputIndex, Inputs};
-use math::Vec2D;
+use crate::game::{Config, InputIndex, Inputs};
+use crate::math::Vec2D;
 
 #[derive(Debug)]
 pub struct Ship {

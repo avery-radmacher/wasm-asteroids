@@ -1,8 +1,8 @@
-use geom::{test_circle_point, test_circle_triangle};
-pub use input::{InputIndex, Inputs};
-use math::Vec2D;
-use rng::{new_rng, Rng, StdRng};
-use ship::Ship;
+use crate::geom::{test_circle_point, test_circle_triangle};
+pub use crate::input::{InputIndex, Inputs};
+use crate::math::Vec2D;
+use crate::rng::{new_rng, Rng, StdRng};
+use crate::ship::Ship;
 
 pub struct Config {
     pub acceleration: f64,

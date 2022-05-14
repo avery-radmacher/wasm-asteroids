@@ -1,5 +1,5 @@
-use game::{Asteroid, Bullet, Explosion, Game, InputIndex};
-use math::Vec2D;
+use crate::game::{Asteroid, Bullet, Explosion, Game, InputIndex};
+use crate::math::Vec2D;
 use std::fmt::Write;
 
 const SHIP_POINTS: &[Vec2D] = &[

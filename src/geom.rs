@@ -1,4 +1,4 @@
-use math::Vec2D;
+use crate::math::Vec2D;
 // From Real-Time Collision Detection by Christer Ericson,
 // published by Morgan Kaufmann Publishers, © 2005 Elsevier Inc
 // p.139, ClosestPtPointTriangle
