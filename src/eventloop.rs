@@ -1,5 +1,5 @@
-use std::cell::{RefCell};
-use std::collections::{HashMap};
+use std::cell::RefCell;
+use std::collections::HashMap;
 
 extern "C" {
     fn event_loop_new() -> u32;
@@ -13,18 +13,28 @@ const EVENT_MOUSE_MOVE: u32 = 2;
 const EVENT_KEY_DOWN: u32 = 3;
 const EVENT_KEY_UP: u32 = 4;
 
-#[derive(Copy,Clone)]
+#[derive(Copy, Clone)]
 pub enum Event {
     Destroyed,
     AnimationFrame,
-    MouseMove { x: u32, y: u32 },
-    KeyDown { code: u32, chr: Option<char>, flags: u32 },
-    KeyUp { code: u32, chr: Option<char>, flags: u32 },
+    MouseMove {
+        x: u32,
+        y: u32,
+    },
+    KeyDown {
+        code: u32,
+        chr: Option<char>,
+        flags: u32,
+    },
+    KeyUp {
+        code: u32,
+        chr: Option<char>,
+        flags: u32,
+    },
 }
 
 #[no_mangle]
-pub extern "C"
-fn event_loop_cb(id: u32, msg: u32, p0: u32, p1: u32, p2: u32) {
+pub extern "C" fn event_loop_cb(id: u32, msg: u32, p0: u32, p1: u32, p2: u32) {
     EVENTLOOPS.with(|el| {
         let mut el = el.borrow_mut();
         let mut fake_event_loop = EventLoop { id: id };
@@ -35,11 +45,19 @@ fn event_loop_cb(id: u32, msg: u32, p0: u32, p1: u32, p2: u32) {
                     cb(Event::Destroyed, &mut fake_event_loop);
                 }
                 return;
-            },
+            }
             EVENT_ANIMATION_FRAME => Event::AnimationFrame,
             EVENT_MOUSE_MOVE => Event::MouseMove { x: p0, y: p1 },
-            EVENT_KEY_DOWN => Event::KeyDown { code: p0, chr: ::std::char::from_u32(p1), flags: p2 },
-            EVENT_KEY_UP => Event::KeyUp { code: p0, chr: ::std::char::from_u32(p1), flags: p2 },
+            EVENT_KEY_DOWN => Event::KeyDown {
+                code: p0,
+                chr: ::std::char::from_u32(p1),
+                flags: p2,
+            },
+            EVENT_KEY_UP => Event::KeyUp {
+                code: p0,
+                chr: ::std::char::from_u32(p1),
+                flags: p2,
+            },
             _ => return,
         };
 
@@ -53,7 +71,7 @@ thread_local! {
     static EVENTLOOPS: RefCell<HashMap<u32, EventLoopCb>> = RefCell::new(HashMap::new());
 }
 
-pub type EventLoopCb = Box<FnMut(Event, &mut EventLoop)>;
+pub type EventLoopCb = Box<dyn FnMut(Event, &mut EventLoop)>;
 
 pub struct EventLoop {
     id: u32,
@@ -69,10 +87,14 @@ impl EventLoop {
     }
 
     pub fn request_animation_frame(&mut self) {
-        unsafe { event_loop_raf(self.id); }
+        unsafe {
+            event_loop_raf(self.id);
+        }
     }
 
     pub fn shutdown(&mut self) {
-        unsafe { event_loop_shutdown(self.id); }
+        unsafe {
+            event_loop_shutdown(self.id);
+        }
     }
 }

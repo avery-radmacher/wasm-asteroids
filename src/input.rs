@@ -1,4 +1,4 @@
-use ::game::{Config};
+use game::Config;
 
 /*
  *     The reason we don't use a simple bool for key state is that

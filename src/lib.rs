@@ -1,13 +1,13 @@
 pub mod alloc;
 pub mod eventloop;
-mod time;
-mod rng;
-mod geom;
-mod math;
-mod ship;
-mod input;
 mod game;
+mod geom;
+mod input;
+mod math;
 mod render_path;
+mod rng;
+mod ship;
+mod time;
 
 extern "C" {
     #[allow(dead_code)]
@@ -24,18 +24,17 @@ fn update_svg(s: &str) {
     unsafe { svg_set_path(s.as_ptr(), s.len()) };
 }
 
-use time::{Instant, Duration};
 use eventloop::{Event, EventLoop};
+use time::{Duration, Instant};
 
-use game::{Game};
-use render_path::{render_game};
+use game::Game;
+use render_path::render_game;
 
 fn duration_to_ms(duration: &Duration) -> f64 {
     (duration.as_secs() as f64) * 1e3 + (duration.subsec_nanos() as f64) / 1e6
 }
 #[no_mangle]
-pub extern "C"
-fn my_main() {
+pub extern "C" fn my_main() {
     let mut game = Box::new(Game::new());
 
     let _start = Instant::now();
@@ -43,18 +42,25 @@ fn my_main() {
     let mut event_loop = EventLoop::new(Box::new(move |event, event_loop| {
         let game = game.as_mut();
         match event {
-            Event::Destroyed => {},
+            Event::Destroyed => {}
             Event::MouseMove { x: _, y: _ } => {
                 //putstr(&format!("x: {}, y: {}", x, y));
-            },
-            Event::KeyDown { code, chr: _, flags: _ } => {
+            }
+            Event::KeyDown {
+                code,
+                chr: _,
+                flags: _,
+            } => {
                 game.inputs.key_down(code, &game.config);
-            },
-            Event::KeyUp { code, chr: _, flags: _ } => {
+            }
+            Event::KeyUp {
+                code,
+                chr: _,
+                flags: _,
+            } => {
                 game.inputs.key_up(code, &game.config);
-            },
+            }
             Event::AnimationFrame => {
-
                 let frame_start = Instant::now();
                 game.tick();
                 let tick_time = frame_start.elapsed();
@@ -67,14 +73,16 @@ fn my_main() {
                 let frame_time = frame_start.elapsed();
 
                 if game.tick % 512 == 0 {
-                    putstr(&format!("tick time: {:.3}ms\nrender time: {:.3}ms\ntotal time: {:.3}",
-                                    duration_to_ms(&tick_time),
-                                    duration_to_ms(&render_time),
-                                    duration_to_ms(&frame_time)));
+                    putstr(&format!(
+                        "tick time: {:.3}ms\nrender time: {:.3}ms\ntotal time: {:.3}",
+                        duration_to_ms(&tick_time),
+                        duration_to_ms(&render_time),
+                        duration_to_ms(&frame_time)
+                    ));
                 }
 
                 event_loop.request_animation_frame();
-            },
+            }
         }
     }));
     putstr("event loop started");

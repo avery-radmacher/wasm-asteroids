@@ -1,8 +1,8 @@
-use ::math::{Vec2D};
-use ::ship::{Ship};
-pub use ::input::{Inputs, InputIndex};
-use ::geom::{test_circle_point, test_circle_triangle};
-use ::rng::{StdRng, Rng, new_rng};
+use geom::{test_circle_point, test_circle_triangle};
+pub use input::{InputIndex, Inputs};
+use math::Vec2D;
+use rng::{new_rng, Rng, StdRng};
+use ship::Ship;
 
 pub struct Config {
     pub acceleration: f64,
@@ -56,7 +56,10 @@ impl Config {
             asteroid_min_size: 20.0,
 
             delta_t: 1.0 / 60.0,
-            field_size: Vec2D { x: 1280.0, y: 720.0 },
+            field_size: Vec2D {
+                x: 1280.0,
+                y: 720.0,
+            },
             key_binds: DEFAULT_KEYBINDS.to_vec(),
         }
     }
@@ -74,6 +77,7 @@ impl Config {
 #[derive(PartialEq)]
 pub enum BulletSource {
     Player,
+    #[allow(dead_code)]
     UFO,
 }
 
@@ -201,11 +205,14 @@ fn collide_asteroid_ship(asteroid: &Asteroid, ship: &Ship) -> bool {
         Vec2D { x: 10.0, y: 0.0 },
         Vec2D { x: -10.0, y: -5.0 },
         Vec2D { x: -10.0, y: 5.0 },
-    ].iter().map(|p| ship.pos + p.scale(2.2).rotate(ship.angle)).collect();
+    ]
+    .iter()
+    .map(|p| ship.pos + p.scale(2.2).rotate(ship.angle))
+    .collect();
     test_circle_triangle(asteroid.pos, asteroid.size, tr[0], tr[1], tr[2])
 }
 
-use ::std::f64::consts::PI;
+use std::f64::consts::PI;
 
 impl Game {
     pub fn new() -> Game {
@@ -243,7 +250,9 @@ impl Game {
                     x: field_size.x * self.rng.next_f64(),
                     y: field_size.y * self.rng.next_f64(),
                 };
-                if (pos - self.ship.pos).len() > 300.0 { break; }
+                if (pos - self.ship.pos).len() > 300.0 {
+                    break;
+                }
             }
             let angle = PI * 2.0 * self.rng.next_f64();
             self.asteroids.push(Asteroid {
@@ -269,7 +278,7 @@ impl Game {
                     self.reset();
                 }
                 return;
-            },
+            }
             GameState::Respawning => {
                 if self.lives == 0 {
                     self.game_state = GameState::GameOver;
@@ -285,13 +294,13 @@ impl Game {
                     ship.angle = ::std::f64::consts::PI * -0.5;
                     ship.dead = false;
                 }
-            },
+            }
             GameState::Running => {
                 if self.asteroids.len() == 0 {
                     self.level += 1;
                     self.spawn_level();
                 }
-            },
+            }
         }
         self.tick += 1;
 
@@ -323,12 +332,12 @@ impl Game {
             let inputs = &self.inputs;
             let config = &self.config;
             if inputs.been_pressed(InputIndex::Shoot) && self.tick >= self.next_bullet_tick {
-                self.next_bullet_tick = self.tick + (config.bullet_interval / config.delta_t) as u64;
+                self.next_bullet_tick =
+                    self.tick + (config.bullet_interval / config.delta_t) as u64;
                 let bullet = Bullet::new(self, BulletSource::Player);
                 self.bullets.push(bullet);
             }
         }
-
 
         // COLLISIONS
         {
@@ -341,7 +350,10 @@ impl Game {
             let mut new_explosions = Vec::new();
             let mut score_change = 0;
             for asteroid in asteroids.iter_mut() {
-                for bullet in bullets.iter_mut().filter(|bullet| bullet.source == BulletSource::Player) {
+                for bullet in bullets
+                    .iter_mut()
+                    .filter(|bullet| bullet.source == BulletSource::Player)
+                {
                     // bullets and asteroids may collide multiple times
                     // the alternative is having order-dependent logic
                     if collide_asteroid_bullet(asteroid, bullet) {
@@ -383,19 +395,21 @@ impl Game {
                             ship.dead = true;
                             bullet.dead = true;
                         }
-                    },
+                    }
                     BulletSource::Player => {
-                        if ufo.as_ref().map_or(false, |ufo| collide_ufo_bullet(ufo, bullet)) {
+                        if ufo
+                            .as_ref()
+                            .map_or(false, |ufo| collide_ufo_bullet(ufo, bullet))
+                        {
                             *ufo = None;
                             bullet.dead = true;
                         }
-                    },
+                    }
                 }
             }
 
             bullets.retain(|bullet| !bullet.dead);
         }
-
 
         {
             // collide asteroids with ship & ufo
@@ -419,7 +433,10 @@ impl Game {
                     collided = true;
                 }
 
-                if ufo.as_ref().map_or(false, |ufo| collide_asteroid_ufo(asteroid, ufo)) {
+                if ufo
+                    .as_ref()
+                    .map_or(false, |ufo| collide_asteroid_ufo(asteroid, ufo))
+                {
                     *ufo = None;
                     collided = true;
                 }
@@ -438,8 +455,7 @@ impl Game {
 
         {
             let collide_ship_ufo = |_, _| false;
-            if collide_ship_ufo(&self.ship, &self.ufo) {
-            }
+            if collide_ship_ufo(&self.ship, &self.ufo) {}
         }
         // END COLLISIONS
 
