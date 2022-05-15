@@ -13,7 +13,6 @@ const EVENT_KEY_UP: u32 = 4;
 
 #[derive(Copy, Clone)]
 pub enum Event {
-    Destroyed,
     AnimationFrame,
     MouseMove {
         x: u32,
