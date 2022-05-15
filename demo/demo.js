@@ -85,13 +85,6 @@ let eventLoop = function (Module) {
       self.rafId = requestAnimationFrame(self.rafCb);
     }
 
-    caf() {
-      let self = this;
-      if (self.rafId) {
-        cancelAnimationFrame(self.rafId);
-      }
-    }
-
     subscribeKeyboard() {
       let self = this;
       if (self.dead) {
@@ -99,25 +92,6 @@ let eventLoop = function (Module) {
       }
       window.addEventListener('keydown', self.keyDown);
       window.addEventListener('keyup', self.keyUp);
-    }
-
-    unsubscribeKeyboard() {
-      let self = this;
-      window.removeEventListener('keydown', self.keyDown);
-      window.removeEventListener('keyup', self.keyUp);
-    }
-
-    shutdown() {
-      let self = this;
-      if (self.dead) {
-        return;
-      }
-      self.dead = true;
-
-      self.caf();
-      self.unsubscribeKeyboard();
-
-      eventLoopsDict.delete(self.id);
     }
   };
 
