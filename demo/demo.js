@@ -23,12 +23,10 @@ let io = {
 };
 
 let time = {
-  performance_time_origin: performance.timeOrigin,
   performance_now: () => performance.now(),
 };
 
 let eventLoop = function (Module) {
-  const EVENT_DESTROYED = 0;
   const EVENT_ANIMATION_FRAME = 1;
   const EVENT_MOUSE_MOVE = 2;
   const EVENT_KEY_DOWN = 3;
@@ -164,12 +162,6 @@ let svg = {
   svg_set_path: (ptr, len) => window.path.setAttributeNS(null, 'd', getStr(Module, ptr, len)),
 };
 
-let math = {
-  sqrt: (x) => Math.sqrt(x),
-  sin: (x) => Math.sin(x),
-  cos: (x) => Math.cos(x),
-};
-
 let randSource = (module) => (ptr, len) => {
   const OK = 0;
   const RANGE_ERROR = 1;
@@ -196,7 +188,7 @@ let rand = {
 };
 
 let imports = {
-  env: Object.assign({}, time, eventLoop(Module), io, svg, math, rand),
+  env: Object.assign({}, time, eventLoop(Module), io, svg, rand),
 };
 
 fetch('/target/wasm32-unknown-unknown/release/svg_asteroids.wasm')
