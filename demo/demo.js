@@ -27,9 +27,9 @@ let time = {
 };
 
 let eventLoop = function (Module) {
-  const EVENT_ANIMATION_FRAME = 1;
-  const EVENT_KEY_DOWN = 3;
-  const EVENT_KEY_UP = 4;
+  const EVENT_ANIMATION_FRAME = 0;
+  const EVENT_KEY_DOWN = 1;
+  const EVENT_KEY_UP = 2;
   let eventLoopsDict = new Map();
   eventLoopsDict.counter = 0;
 

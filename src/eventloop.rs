@@ -6,9 +6,9 @@ extern "C" {
     fn event_loop_raf(id: u32);
 }
 
-const EVENT_ANIMATION_FRAME: u32 = 1;
-const EVENT_KEY_DOWN: u32 = 3;
-const EVENT_KEY_UP: u32 = 4;
+const EVENT_ANIMATION_FRAME: u32 = 0;
+const EVENT_KEY_DOWN: u32 = 1;
+const EVENT_KEY_UP: u32 = 2;
 
 #[derive(Copy, Clone)]
 pub enum Event {
