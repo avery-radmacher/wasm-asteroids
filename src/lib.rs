@@ -10,8 +10,6 @@ mod ship;
 mod time;
 
 extern "C" {
-    #[allow(dead_code)]
-    fn alert(n: f64);
     fn puts(ptr: *const u8, len: usize);
     fn svg_set_path(ptr: *const u8, len: usize);
 }

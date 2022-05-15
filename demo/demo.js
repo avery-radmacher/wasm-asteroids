@@ -20,7 +20,6 @@ let putStr = function (module, str) {
 
 let io = {
   puts: (ptr, len) => console.log(getStr(Module, ptr, len)),
-  alert: (n) => alert(n),
 };
 
 let time = {
