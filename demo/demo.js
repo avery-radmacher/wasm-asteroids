@@ -217,7 +217,6 @@ fetch('/target/wasm32-unknown-unknown/release/svg_asteroids.wasm')
     let exports = instance.exports;
     Object.assign(Module, {
       alloc: exports.alloc,
-      dealloc: exports.dealloc,
       memory: exports.memory,
       event_loop_cb: exports.event_loop_cb,
     });
