@@ -1,7 +1,7 @@
 'use strict';
 let Module = {};
 
-// copying strings
+// #region copying strings
 let utfDecoder = new TextDecoder('utf-8');
 let getStr = function (module, ptr, len) {
   let slice = new Uint8Array(module.memory.buffer, ptr, len);
@@ -16,7 +16,7 @@ let putStr = function (module, str) {
   slice.set(buf);
   return { ptr: ptr, len: buf.length };
 };
-// /copying strings
+// #endregion
 
 let io = {
   puts: (ptr, len) => console.log(getStr(Module, ptr, len)),
