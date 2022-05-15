@@ -7,17 +7,12 @@ extern "C" {
 }
 
 const EVENT_ANIMATION_FRAME: u32 = 1;
-const EVENT_MOUSE_MOVE: u32 = 2;
 const EVENT_KEY_DOWN: u32 = 3;
 const EVENT_KEY_UP: u32 = 4;
 
 #[derive(Copy, Clone)]
 pub enum Event {
     AnimationFrame,
-    MouseMove {
-        x: u32,
-        y: u32,
-    },
     KeyDown {
         code: u32,
         chr: Option<char>,
@@ -38,7 +33,6 @@ pub extern "C" fn event_loop_cb(id: u32, msg: u32, p0: u32, p1: u32, p2: u32) {
 
         let event = match msg {
             EVENT_ANIMATION_FRAME => Event::AnimationFrame,
-            EVENT_MOUSE_MOVE => Event::MouseMove { x: p0, y: p1 },
             EVENT_KEY_DOWN => Event::KeyDown {
                 code: p0,
                 chr: ::std::char::from_u32(p1),

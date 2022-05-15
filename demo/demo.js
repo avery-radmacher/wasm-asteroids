@@ -28,7 +28,6 @@ let time = {
 
 let eventLoop = function (Module) {
   const EVENT_ANIMATION_FRAME = 1;
-  const EVENT_MOUSE_MOVE = 2;
   const EVENT_KEY_DOWN = 3;
   const EVENT_KEY_UP = 4;
   let eventLoopsDict = new Map();
@@ -61,13 +60,6 @@ let eventLoop = function (Module) {
         callback(id, EVENT_ANIMATION_FRAME, 0, 0, 0);
       };
 
-      self.mouseMoveCb = function (event) {
-        if (self.dead) {
-          return;
-        }
-        callback(id, EVENT_MOUSE_MOVE, event.pageX, event.pageY, 0);
-      };
-
       self.keyDown = function (event) {
         if (self.dead) {
           return;
@@ -82,7 +74,6 @@ let eventLoop = function (Module) {
         callback(id, EVENT_KEY_UP, event.which, charKey(event), keyEventFlags(event));
       };
 
-      self.subscribeMouse();
       self.subscribeKeyboard();
     }
 
@@ -99,19 +90,6 @@ let eventLoop = function (Module) {
       if (self.rafId) {
         cancelAnimationFrame(self.rafId);
       }
-    }
-
-    subscribeMouse() {
-      let self = this;
-      if (self.dead) {
-        return;
-      }
-      window.addEventListener('mousemove', self.mouseMoveCb);
-    }
-
-    unsubscribeMouse() {
-      let self = this;
-      window.removeEventListener('mousemove', self.mouseMoveCb);
     }
 
     subscribeKeyboard() {
@@ -137,7 +115,6 @@ let eventLoop = function (Module) {
       self.dead = true;
 
       self.caf();
-      self.unsubscribeMouse();
       self.unsubscribeKeyboard();
 
       eventLoopsDict.delete(self.id);
