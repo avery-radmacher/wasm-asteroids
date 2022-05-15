@@ -6,7 +6,6 @@ extern "C" {
     fn event_loop_raf(id: u32);
 }
 
-const EVENT_DESTROYED: u32 = 0;
 const EVENT_ANIMATION_FRAME: u32 = 1;
 const EVENT_MOUSE_MOVE: u32 = 2;
 const EVENT_KEY_DOWN: u32 = 3;
@@ -39,12 +38,6 @@ pub extern "C" fn event_loop_cb(id: u32, msg: u32, p0: u32, p1: u32, p2: u32) {
         let mut fake_event_loop = EventLoop { id: id };
 
         let event = match msg {
-            EVENT_DESTROYED => {
-                if let Some(mut cb) = el.remove(&id) {
-                    cb(Event::Destroyed, &mut fake_event_loop);
-                }
-                return;
-            }
             EVENT_ANIMATION_FRAME => Event::AnimationFrame,
             EVENT_MOUSE_MOVE => Event::MouseMove { x: p0, y: p1 },
             EVENT_KEY_DOWN => Event::KeyDown {
