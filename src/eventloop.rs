@@ -4,7 +4,6 @@ use std::collections::HashMap;
 extern "C" {
     fn event_loop_new() -> u32;
     fn event_loop_raf(id: u32);
-    fn event_loop_shutdown(id: u32) -> bool;
 }
 
 const EVENT_DESTROYED: u32 = 0;
@@ -89,12 +88,6 @@ impl EventLoop {
     pub fn request_animation_frame(&mut self) {
         unsafe {
             event_loop_raf(self.id);
-        }
-    }
-
-    pub fn shutdown(&mut self) {
-        unsafe {
-            event_loop_shutdown(self.id);
         }
     }
 }

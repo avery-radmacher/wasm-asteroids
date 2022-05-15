@@ -154,19 +154,10 @@ let eventLoop = function (Module) {
     eventLoopsDict.get(id).raf();
     return true;
   };
-  let destroy = function (id) {
-    if (!eventLoopsDict.has(id)) {
-      return false;
-    }
-    eventLoopsDict.get(id).destroy();
-    setInterval(() => Module.event_loop_cb(id, EVENT_DESTROYED, 0, 0, 0), 0);
-    return true;
-  };
 
   return {
     event_loop_new: () => new EventLoop(Module.event_loop_cb).id,
     event_loop_raf: raf,
-    event_loop_shutdown: destroy,
   };
 };
 
