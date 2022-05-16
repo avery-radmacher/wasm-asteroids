@@ -10,8 +10,6 @@ mod ship;
 mod time;
 
 extern "C" {
-    #[allow(dead_code)]
-    fn alert(n: f64);
     fn puts(ptr: *const u8, len: usize);
     fn svg_set_path(ptr: *const u8, len: usize);
 }
@@ -42,10 +40,6 @@ pub extern "C" fn my_main() {
     let mut event_loop = EventLoop::new(Box::new(move |event, event_loop| {
         let game = game.as_mut();
         match event {
-            Event::Destroyed => {}
-            Event::MouseMove { x: _, y: _ } => {
-                //putstr(&format!("x: {}, y: {}", x, y));
-            }
             Event::KeyDown {
                 code,
                 chr: _,

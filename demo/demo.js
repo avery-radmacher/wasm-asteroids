@@ -1,7 +1,7 @@
 'use strict';
 let Module = {};
 
-// copying strings
+// #region copying strings
 let utfDecoder = new TextDecoder('utf-8');
 let getStr = function (module, ptr, len) {
   let slice = new Uint8Array(module.memory.buffer, ptr, len);
@@ -16,24 +16,20 @@ let putStr = function (module, str) {
   slice.set(buf);
   return { ptr: ptr, len: buf.length };
 };
-// /copying strings
+// #endregion
 
 let io = {
   puts: (ptr, len) => console.log(getStr(Module, ptr, len)),
-  alert: (n) => alert(n),
 };
 
 let time = {
-  performance_time_origin: performance.timeOrigin,
   performance_now: () => performance.now(),
 };
 
 let eventLoop = function (Module) {
-  const EVENT_DESTROYED = 0;
-  const EVENT_ANIMATION_FRAME = 1;
-  const EVENT_MOUSE_MOVE = 2;
-  const EVENT_KEY_DOWN = 3;
-  const EVENT_KEY_UP = 4;
+  const EVENT_ANIMATION_FRAME = 0;
+  const EVENT_KEY_DOWN = 1;
+  const EVENT_KEY_UP = 2;
   let eventLoopsDict = new Map();
   eventLoopsDict.counter = 0;
 
@@ -64,13 +60,6 @@ let eventLoop = function (Module) {
         callback(id, EVENT_ANIMATION_FRAME, 0, 0, 0);
       };
 
-      self.mouseMoveCb = function (event) {
-        if (self.dead) {
-          return;
-        }
-        callback(id, EVENT_MOUSE_MOVE, event.pageX, event.pageY, 0);
-      };
-
       self.keyDown = function (event) {
         if (self.dead) {
           return;
@@ -85,7 +74,6 @@ let eventLoop = function (Module) {
         callback(id, EVENT_KEY_UP, event.which, charKey(event), keyEventFlags(event));
       };
 
-      self.subscribeMouse();
       self.subscribeKeyboard();
     }
 
@@ -97,26 +85,6 @@ let eventLoop = function (Module) {
       self.rafId = requestAnimationFrame(self.rafCb);
     }
 
-    caf() {
-      let self = this;
-      if (self.rafId) {
-        cancelAnimationFrame(self.rafId);
-      }
-    }
-
-    subscribeMouse() {
-      let self = this;
-      if (self.dead) {
-        return;
-      }
-      window.addEventListener('mousemove', self.mouseMoveCb);
-    }
-
-    unsubscribeMouse() {
-      let self = this;
-      window.removeEventListener('mousemove', self.mouseMoveCb);
-    }
-
     subscribeKeyboard() {
       let self = this;
       if (self.dead) {
@@ -124,26 +92,6 @@ let eventLoop = function (Module) {
       }
       window.addEventListener('keydown', self.keyDown);
       window.addEventListener('keyup', self.keyUp);
-    }
-
-    unsubscribeKeyboard() {
-      let self = this;
-      window.removeEventListener('keydown', self.keyDown);
-      window.removeEventListener('keyup', self.keyUp);
-    }
-
-    shutdown() {
-      let self = this;
-      if (self.dead) {
-        return;
-      }
-      self.dead = true;
-
-      self.caf();
-      self.unsubscribeMouse();
-      self.unsubscribeKeyboard();
-
-      eventLoopsDict.delete(self.id);
     }
   };
 
@@ -154,30 +102,15 @@ let eventLoop = function (Module) {
     eventLoopsDict.get(id).raf();
     return true;
   };
-  let destroy = function (id) {
-    if (!eventLoopsDict.has(id)) {
-      return false;
-    }
-    eventLoopsDict.get(id).destroy();
-    setInterval(() => Module.event_loop_cb(id, EVENT_DESTROYED, 0, 0, 0), 0);
-    return true;
-  };
 
   return {
     event_loop_new: () => new EventLoop(Module.event_loop_cb).id,
     event_loop_raf: raf,
-    event_loop_shutdown: destroy,
   };
 };
 
 let svg = {
   svg_set_path: (ptr, len) => window.path.setAttributeNS(null, 'd', getStr(Module, ptr, len)),
-};
-
-let math = {
-  sqrt: (x) => Math.sqrt(x),
-  sin: (x) => Math.sin(x),
-  cos: (x) => Math.cos(x),
 };
 
 let randSource = (module) => (ptr, len) => {
@@ -206,7 +139,7 @@ let rand = {
 };
 
 let imports = {
-  env: Object.assign({}, time, eventLoop(Module), io, svg, math, rand),
+  env: Object.assign({}, time, eventLoop(Module), io, svg, rand),
 };
 
 fetch('/target/wasm32-unknown-unknown/release/svg_asteroids.wasm')
@@ -217,7 +150,6 @@ fetch('/target/wasm32-unknown-unknown/release/svg_asteroids.wasm')
     let exports = instance.exports;
     Object.assign(Module, {
       alloc: exports.alloc,
-      dealloc: exports.dealloc,
       memory: exports.memory,
       event_loop_cb: exports.event_loop_cb,
     });
