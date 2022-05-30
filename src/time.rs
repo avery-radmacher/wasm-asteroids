@@ -1,5 +1,7 @@
 pub use std::time::Duration;
+use wasm_bindgen::prelude::*;
 
+#[wasm_bindgen(module = "/js/demo.js")]
 extern "C" {
     //static performance_time_origin: f64;
     fn performance_now() -> f64;

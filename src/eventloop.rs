@@ -1,6 +1,8 @@
 use std::cell::RefCell;
 use std::collections::HashMap;
+use wasm_bindgen::prelude::*;
 
+#[wasm_bindgen(module = "/js/demo.js")]
 extern "C" {
     fn event_loop_new() -> u32;
     fn event_loop_raf(id: u32);

@@ -8,7 +8,9 @@ mod render_path;
 mod rng;
 mod ship;
 mod time;
+use wasm_bindgen::prelude::*;
 
+#[wasm_bindgen(module = "/js/demo.js")]
 extern "C" {
     fn puts(ptr: *const u8, len: usize);
     fn svg_set_path(ptr: *const u8, len: usize);
@@ -32,6 +34,7 @@ fn duration_to_ms(duration: &Duration) -> f64 {
     (duration.as_secs() as f64) * 1e3 + (duration.subsec_nanos() as f64) / 1e6
 }
 #[no_mangle]
+#[wasm_bindgen(start)]
 pub extern "C" fn my_main() {
     let mut game = Box::new(Game::new());
 
