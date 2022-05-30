@@ -1,11 +1,4 @@
 pub use std::time::Duration;
-use wasm_bindgen::prelude::*;
-
-#[wasm_bindgen(module = "/js/demo.js")]
-extern "C" {
-    //static performance_time_origin: f64;
-    fn performance_now() -> f64;
-}
 
 #[derive(Copy, Clone)]
 pub struct Instant {
@@ -16,7 +9,7 @@ impl Instant {
     pub fn now() -> Instant {
         unsafe {
             Instant {
-                now: performance_now(),
+                now: web_sys::window().unwrap().performance().unwrap().now(),
             }
         }
     }
