@@ -7,10 +7,8 @@ pub struct Instant {
 
 impl Instant {
     pub fn now() -> Instant {
-        unsafe {
-            Instant {
-                now: web_sys::window().unwrap().performance().unwrap().now(),
-            }
+        Instant {
+            now: web_sys::window().unwrap().performance().unwrap().now(),
         }
     }
     pub fn duration_since(&self, earlier: Instant) -> Duration {
