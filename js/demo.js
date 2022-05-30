@@ -1,11 +1,5 @@
 import { memory, event_loop_cb } from '../../../index_bg.wasm';
 
-let utfDecoder = new TextDecoder('utf-8');
-let getStr = function (ptr, len) {
-  let slice = new Uint8Array(memory.buffer, ptr, len);
-  return utfDecoder.decode(slice);
-};
-
 export const { event_loop_new, event_loop_raf } = (() => {
   const EVENT_ANIMATION_FRAME = 0;
   const EVENT_KEY_DOWN = 1;
