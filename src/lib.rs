@@ -13,15 +13,11 @@ use web_sys::console;
 
 #[wasm_bindgen(module = "/js/demo.js")]
 extern "C" {
-    fn svg_set_path(ptr: *const u8, len: usize);
+    fn svg_set_path(val: &str);
 }
 
 fn putstr(s: &str) {
     console::log_1(&s.into());
-}
-
-fn update_svg(s: &str) {
-    unsafe { svg_set_path(s.as_ptr(), s.len()) };
 }
 
 use eventloop::{Event, EventLoop};
@@ -65,7 +61,7 @@ pub extern "C" fn my_main() {
                 let render_start = Instant::now();
                 let mut buf = String::new();
                 render_game(&mut buf, game);
-                update_svg(&buf);
+                svg_set_path(&buf);
                 let render_time = render_start.elapsed();
                 let frame_time = frame_start.elapsed();
 

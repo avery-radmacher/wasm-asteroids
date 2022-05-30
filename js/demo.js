@@ -91,7 +91,7 @@ export const { event_loop_new, event_loop_raf } = (() => {
   };
 })();
 
-export const svg_set_path = (ptr, len) => window.path.setAttributeNS(null, 'd', getStr(ptr, len));
+export const svg_set_path = (str) => window.path.setAttributeNS(null, 'd', str);
 
 export const js_fill_rand = (ptr, len) => {
   const OK = 0;
