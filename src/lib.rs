@@ -1,4 +1,3 @@
-pub mod alloc;
 pub mod eventloop;
 mod game;
 mod geom;
