@@ -6,8 +6,6 @@ let getStr = function (ptr, len) {
   return utfDecoder.decode(slice);
 };
 
-export const puts = (ptr, len) => console.log(getStr(ptr, len));
-
 export const performance_now = () => performance.now();
 
 export const { event_loop_new, event_loop_raf } = (() => {

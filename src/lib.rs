@@ -9,15 +9,15 @@ mod rng;
 mod ship;
 mod time;
 use wasm_bindgen::prelude::*;
+use web_sys::console;
 
 #[wasm_bindgen(module = "/js/demo.js")]
 extern "C" {
-    fn puts(ptr: *const u8, len: usize);
     fn svg_set_path(ptr: *const u8, len: usize);
 }
 
 fn putstr(s: &str) {
-    unsafe { puts(s.as_ptr(), s.len()) };
+    console::log_1(&s.into());
 }
 
 fn update_svg(s: &str) {
