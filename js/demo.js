@@ -1,4 +1,4 @@
-import { memory, event_loop_cb } from '../../../index_bg.wasm';
+import { event_loop_cb } from '../../../index_bg.wasm';
 
 export const { event_loop_new, event_loop_raf } = (() => {
   const EVENT_ANIMATION_FRAME = 0;
@@ -85,13 +85,12 @@ export const { event_loop_new, event_loop_raf } = (() => {
 
 export const svg_set_path = (str) => window.path.setAttributeNS(null, 'd', str);
 
-export const js_fill_rand = (ptr, len) => {
+export const js_fill_rand = (slice) => {
   const OK = 0;
   const RANGE_ERROR = 1;
   const QUOTA_ERROR = 2;
 
   try {
-    let slice = new Uint8Array(memory.buffer, ptr, len);
     window.crypto.getRandomValues(slice);
   } catch (e) {
     if (e instanceof RangeError) {
