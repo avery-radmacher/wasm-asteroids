@@ -1,9 +1,11 @@
 extern crate rand;
 
 pub use self::rand::{Rng, SeedableRng, StdRng};
+use wasm_bindgen::prelude::*;
 
+#[wasm_bindgen(module = "/js/demo.js")]
 extern "C" {
-    fn js_fill_rand(ptr: *mut u8, len: usize) -> usize;
+    fn js_fill_rand(buf: &mut [u8]) -> usize;
 }
 
 #[derive(Debug)]
@@ -14,7 +16,7 @@ pub enum RNGSourceError {
 }
 
 pub fn fill_random(buf: &mut [u8]) -> Result<(), RNGSourceError> {
-    let rv = unsafe { js_fill_rand(buf.as_mut_ptr(), buf.len()) };
+    let rv = js_fill_rand(buf);
     match rv {
         0 => Ok(()),
         1 => Err(RNGSourceError::RangeError),

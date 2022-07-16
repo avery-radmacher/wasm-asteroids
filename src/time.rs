@@ -1,10 +1,5 @@
 pub use std::time::Duration;
 
-extern "C" {
-    //static performance_time_origin: f64;
-    fn performance_now() -> f64;
-}
-
 #[derive(Copy, Clone)]
 pub struct Instant {
     now: f64,
@@ -12,10 +7,8 @@ pub struct Instant {
 
 impl Instant {
     pub fn now() -> Instant {
-        unsafe {
-            Instant {
-                now: performance_now(),
-            }
+        Instant {
+            now: web_sys::window().unwrap().performance().unwrap().now(),
         }
     }
     pub fn duration_since(&self, earlier: Instant) -> Duration {
@@ -25,6 +18,6 @@ impl Instant {
         Duration::new(secs, nano)
     }
     pub fn elapsed(&self) -> Duration {
-        Instant::now().duration_since(self.clone())
+        Instant::now().duration_since(*self)
     }
 }

@@ -1,6 +1,8 @@
 use std::cell::RefCell;
 use std::collections::HashMap;
+use wasm_bindgen::prelude::*;
 
+#[wasm_bindgen(module = "/js/demo.js")]
 extern "C" {
     fn event_loop_new() -> u32;
     fn event_loop_raf(id: u32);
@@ -64,7 +66,7 @@ pub struct EventLoop {
 
 impl EventLoop {
     pub fn new(cb: EventLoopCb) -> EventLoop {
-        let id = unsafe { event_loop_new() };
+        let id = event_loop_new();
         EVENTLOOPS.with(|el| {
             el.borrow_mut().insert(id, cb);
         });
@@ -72,8 +74,6 @@ impl EventLoop {
     }
 
     pub fn request_animation_frame(&mut self) {
-        unsafe {
-            event_loop_raf(self.id);
-        }
+        event_loop_raf(self.id);
     }
 }
