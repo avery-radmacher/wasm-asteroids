@@ -3,12 +3,9 @@ use crate::math::Vec2D;
 // published by Morgan Kaufmann Publishers, © 2005 Elsevier Inc
 // p.139, ClosestPtPointTriangle
 fn closest_triangle_point(p: Vec2D, a: Vec2D, b: Vec2D, c: Vec2D) -> Vec2D {
-    let ab = b - a;
-    let bc = c - b;
-    let ca = a - c;
-    let ap = p - a;
-    let bp = p - b;
-    let cp = p - c;
+    let (ab, ap) = (b - a, p - a);
+    let (bc, bp) = (c - b, p - b);
+    let (ca, cp) = (a - c, p - c);
     // Compute parametric position s for projection P’ of P on AB,
     // P’ = A + s*AB, s = snom/(snom+sdenom)
     let snom = ap.dot(ab);
