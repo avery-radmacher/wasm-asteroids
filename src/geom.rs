@@ -25,7 +25,7 @@ fn closest_triangle_point(p: Vec2D, a: Vec2D, b: Vec2D, c: Vec2D) -> Vec2D {
         return b;
     } // Vertex region early out
     if tdenom <= 0.0 && udenom <= 0.0 {
-        return b;
+        return c;
     } // Vertex region early out
       // P is outside (or on) AB if the triple scalar product [N PA PB] <= 0
     let n = (ab).cross(ac);
