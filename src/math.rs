@@ -1,9 +1,5 @@
 use std::ops::{Add, AddAssign, Sub, SubAssign};
 
-pub fn clip(x: f64, max: f64) -> f64 {
-    x - (x / max).floor() * max
-}
-
 #[derive(Clone, Copy, Debug)]
 pub struct Vec2D {
     pub x: f64,
@@ -85,7 +81,7 @@ impl Vec2D {
     }
 
     pub fn clip(&mut self, other: &Vec2D) {
-        self.x = clip(self.x, other.x);
-        self.y = clip(self.y, other.y);
+        self.x = self.x.rem_euclid(other.x);
+        self.y = self.y.rem_euclid(other.y);
     }
 }
