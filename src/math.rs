@@ -28,15 +28,13 @@ impl Sub for Vec2D {
 
 impl AddAssign for Vec2D {
     fn add_assign(&mut self, other: Vec2D) {
-        self.x += other.x;
-        self.y += other.y;
+        *self = *self + other;
     }
 }
 
 impl SubAssign for Vec2D {
     fn sub_assign(&mut self, other: Vec2D) {
-        self.x -= other.x;
-        self.y -= other.y;
+        *self = *self - other
     }
 }
 
