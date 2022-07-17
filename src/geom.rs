@@ -9,18 +9,18 @@ fn closest_triangle_point(p: Vec2D, a: Vec2D, b: Vec2D, c: Vec2D) -> Vec2D {
     // Compute parametric position s for projection P’ of P on AB,
     // P’ = A + s*AB, s = snom/(snom+sdenom)
     let snom = (p - a).dot(ab);
-    let sdenom = (p - b).dot(a - b);
+    let sdenom = (b - p).dot(ab);
     // Compute parametric position t for projection P’ of P on AC,
     // P’ = A + t*AC, s = tnom/(tnom+tdenom)
     let tnom = (p - a).dot(ac);
-    let tdenom = (p - c).dot(a - c);
+    let tdenom = (c - p).dot(ac);
     if snom <= 0.0 && tnom <= 0.0 {
         return a;
     } // Vertex region early out
       // Compute parametric position u for projection P’ of P on BC,
       // P’ = B + u*BC, u = unom/(unom+udenom)
     let unom = (p - b).dot(bc);
-    let udenom = (p - c).dot(b - c);
+    let udenom = (c - p).dot(bc);
     if sdenom <= 0.0 && unom <= 0.0 {
         return b;
     } // Vertex region early out
@@ -28,7 +28,7 @@ fn closest_triangle_point(p: Vec2D, a: Vec2D, b: Vec2D, c: Vec2D) -> Vec2D {
         return b;
     } // Vertex region early out
       // P is outside (or on) AB if the triple scalar product [N PA PB] <= 0
-    let n = (b - a).cross(c - a);
+    let n = (ab).cross(ac);
     let vc = n * (a - p).cross(b - p);
     // If P outside AB and within feature region of AB,
     // return projection of P onto AB
