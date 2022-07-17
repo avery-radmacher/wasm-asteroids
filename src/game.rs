@@ -31,9 +31,13 @@ const DEFAULT_KEYBINDS: &[(u32, InputIndex)] = &[
     (90, InputIndex::Shoot),    // Z
     (32, InputIndex::Shoot),    // Space
     (38, InputIndex::Forward),  // Up
+    (87, InputIndex::Forward),  // W
     (40, InputIndex::Backward), // Down
+    (83, InputIndex::Backward), // S
     (37, InputIndex::Left),     // Left
+    (65, InputIndex::Left),     // A
     (39, InputIndex::Right),    // Right
+    (68, InputIndex::Right),    // D
 ];
 
 impl Config {
