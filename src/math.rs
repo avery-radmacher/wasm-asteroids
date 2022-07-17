@@ -50,8 +50,12 @@ impl Vec2D {
         self.x * other.x + self.y * other.y
     }
 
+    pub fn len_squared(self) -> f64 {
+        self.dot(self)
+    }
+
     pub fn len(self) -> f64 {
-        self.dot(self).sqrt()
+        self.len_squared().sqrt()
     }
 
     pub fn cross(self, other: Self) -> f64 {

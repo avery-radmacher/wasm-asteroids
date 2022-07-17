@@ -61,6 +61,5 @@ pub fn test_circle_triangle(center: Vec2D, radius: f64, a: Vec2D, b: Vec2D, c: V
 }
 
 pub fn test_circle_point(center: Vec2D, radius: f64, point: Vec2D) -> bool {
-    let diff = center - point;
-    return diff.dot(diff) <= radius * radius;
+    (center - point).len_squared() <= radius * radius
 }
