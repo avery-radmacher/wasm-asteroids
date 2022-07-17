@@ -31,25 +31,25 @@ fn closest_triangle_point(p: Vec2D, a: Vec2D, b: Vec2D, c: Vec2D) -> Vec2D {
         return c;
     } // Vertex region early out
       // P is outside (or on) AB if the triple scalar product [N PA PB] <= 0
-    let n = -ab.cross(ca);
+    let n = ab.cross(ca);
     let vc = n * ap.cross(bp);
     // If P outside AB and within feature region of AB,
     // return projection of P onto AB
-    if vc < 0.0 && snom >= 0.0 && sdenom >= 0.0 {
+    if vc > 0.0 && snom >= 0.0 && sdenom >= 0.0 {
         return a + ab.scale(snom / (snom + sdenom));
     }
     // P is outside (or on) BC if the triple scalar product [N PB PC] <= 0
     let va = n * bp.dot(cp);
     // If P outside BC and within feature region of BC,
     // return projection of P onto BC
-    if va <= 0.0 && unom >= 0.0 && udenom >= 0.0 {
+    if va >= 0.0 && unom >= 0.0 && udenom >= 0.0 {
         return b + bc.scale(unom / (unom + udenom));
     }
     // P is outside (or on) CA if the triple scalar product [N PC PA] <= 0
     let vb = n * cp.cross(ap);
     // If P outside CA and within feature region of CA,
     // return projection of P onto CA
-    if vb <= 0.0 && tnom >= 0.0 && tdenom >= 0.0 {
+    if vb >= 0.0 && tnom >= 0.0 && tdenom >= 0.0 {
         return a - ca.scale(tnom / (tnom + tdenom));
     }
     // P must project inside face region. Compute Q using barycentric coordinates
