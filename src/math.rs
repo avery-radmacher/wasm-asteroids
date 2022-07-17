@@ -80,8 +80,8 @@ impl Vec2D {
         }
     }
 
-    pub fn clip(&mut self, other: &Vec2D) {
-        self.x = self.x.rem_euclid(other.x);
-        self.y = self.y.rem_euclid(other.y);
+    pub fn rem_euclid_assign(&mut self, rhs: &Vec2D) {
+        self.x = self.x.rem_euclid(rhs.x);
+        self.y = self.y.rem_euclid(rhs.y);
     }
 }
