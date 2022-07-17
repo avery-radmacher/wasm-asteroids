@@ -57,8 +57,7 @@ fn closest_triangle_point(p: Vec2D, a: Vec2D, b: Vec2D, c: Vec2D) -> Vec2D {
 }
 
 pub fn test_circle_triangle(center: Vec2D, radius: f64, a: Vec2D, b: Vec2D, c: Vec2D) -> bool {
-    let diff = center - closest_triangle_point(center, a, b, c);
-    return diff.dot(diff) <= radius * radius;
+    test_circle_point(center, radius, closest_triangle_point(center, a, b, c))
 }
 
 pub fn test_circle_point(center: Vec2D, radius: f64, point: Vec2D) -> bool {
