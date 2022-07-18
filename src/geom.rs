@@ -7,27 +7,29 @@ fn closest_triangle_point(p: Vec2D, a: Vec2D, b: Vec2D, c: Vec2D) -> Vec2D {
     let (bc, bp) = (c - b, p - b);
     let (ca, cp) = (a - c, p - c);
     // Compute parametric position s for projection P’ of P on AB,
-    // P’ = A + s*AB, s = snom/(snom+sdenom)
+    // P’ = A + s*AB, s = c_nom / (c_nom + c_denom)
     let c_nom = ap.dot(ab);
     let c_denom = -bp.dot(ab);
-    // Compute parametric position t for projection P’ of P on AC,
-    // P’ = A + t*AC, s = tnom/(tnom+tdenom)
+    // Compute parametric position t for projection P’ of P on CA,
+    // P’ = A + t*AC, t = b_nom / (b_nom + b_denom)
     let b_nom = cp.dot(ca);
     let b_denom = -ap.dot(ca);
+    // Vertex region early out
     if c_nom <= 0.0 && b_denom <= 0.0 {
         return a;
-    } // Vertex region early out
-      // Compute parametric position u for projection P’ of P on BC,
-      // P’ = B + u*BC, u = unom/(unom+udenom)
+    }
+    // Compute parametric position u for projection P’ of P on BC,
+    // P’ = B + u*BC, u = a_nom / (a_nom + a_denom)
     let a_nom = bp.dot(bc);
     let a_denom = -cp.dot(bc);
+    // Vertex region early outs
     if a_nom <= 0.0 && c_denom <= 0.0 {
         return b;
-    } // Vertex region early out
+    }
     if b_nom <= 0.0 && a_denom <= 0.0 {
         return c;
-    } // Vertex region early out
-      // P is outside (or on) AB if the triple scalar product [N PA PB] <= 0
+    }
+    // P is outside (or on) AB if the triple scalar product [N PA PB] <= 0
     let n = ab.cross(ca);
     let vc = n * ap.cross(bp);
     // If P outside AB and within feature region of AB,
