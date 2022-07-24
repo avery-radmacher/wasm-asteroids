@@ -51,11 +51,8 @@ fn closest_triangle_point(p: Vec2D, a: Vec2D, b: Vec2D, c: Vec2D) -> Vec2D {
     if vb >= 0.0 && b_nom >= 0.0 && b_denom >= 0.0 {
         return c + ca.scale(b_nom / (b_nom + b_denom));
     }
-    // P must project inside face region. Compute Q using barycentric coordinates
-    let a_scale = va / (va + vb + vc);
-    let b_scale = vb / (va + vb + vc);
-    let c_scale = 1.0 - a_scale - b_scale; // = vc / (va + vb + vc)
-    return a.scale(a_scale) + b.scale(b_scale) + c.scale(c_scale);
+    // P must project inside face region
+    p
 }
 
 pub fn test_circle_triangle(center: Vec2D, radius: f64, a: Vec2D, b: Vec2D, c: Vec2D) -> bool {
