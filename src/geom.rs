@@ -38,7 +38,7 @@ fn closest_triangle_point(p: Vec2D, a: Vec2D, b: Vec2D, c: Vec2D) -> Vec2D {
         return a + ab.scale(c_nom / (c_nom + c_denom));
     }
     // P is outside (or on) BC if the triple scalar product [N BP CP] <= 0
-    let va = n * bp.dot(cp);
+    let va = n * bp.cross(cp);
     // If P outside BC and within feature region of BC,
     // return projection of P onto BC
     if va >= 0.0 && a_nom >= 0.0 && a_denom >= 0.0 {
