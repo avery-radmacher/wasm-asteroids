@@ -68,7 +68,7 @@ impl Ship {
             .max(-config.angular_limit);
 
         // constrain position
-        self.pos.clip(&config.field_size);
+        self.pos.rem_euclid_assign(&config.field_size);
 
         // integration step
         self.pos += self.speed.scale(config.delta_t);

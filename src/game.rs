@@ -96,7 +96,7 @@ pub struct Bullet {
 impl Bullet {
     pub fn tick(&mut self, config: &Config) {
         self.pos += self.speed.scale(config.delta_t);
-        self.pos.clip(&config.field_size);
+        self.pos.rem_euclid_assign(&config.field_size);
     }
 }
 
@@ -129,7 +129,7 @@ pub struct Asteroid {
 impl Asteroid {
     pub fn tick(&mut self, config: &Config) {
         self.pos += self.speed.scale(config.delta_t);
-        self.pos.clip(&config.field_size);
+        self.pos.rem_euclid_assign(&config.field_size);
         self.angle += self.angle_speed * config.delta_t;
     }
 
