@@ -1,5 +1,6 @@
 use crate::math::Vec2D;
 
+/// Calculates the closest point to `p` in or on triangle `abc`.
 fn closest_triangle_point(p: Vec2D, a: Vec2D, b: Vec2D, c: Vec2D) -> Vec2D {
     // adapted from Real-Time Collision Detection by Christer Ericson,
     // published by Morgan Kaufmann Publishers, © 2005 Elsevier Inc
@@ -54,10 +55,12 @@ fn closest_triangle_point(p: Vec2D, a: Vec2D, b: Vec2D, c: Vec2D) -> Vec2D {
     p
 }
 
+/// Calculates whether the provided circle (with `center` and `radius`) and triangle (`abc`) touch or intersect.
 pub fn test_circle_triangle(center: Vec2D, radius: f64, a: Vec2D, b: Vec2D, c: Vec2D) -> bool {
     test_circle_point(center, radius, closest_triangle_point(center, a, b, c))
 }
 
+/// Calculates whether the provided circle (with `center` and `radius`) contains `point`.
 pub fn test_circle_point(center: Vec2D, radius: f64, point: Vec2D) -> bool {
     (center - point).len_squared() <= radius * radius
 }
