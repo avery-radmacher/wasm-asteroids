@@ -2,6 +2,8 @@ extern crate rand;
 
 pub use self::rand::{Rng, SeedableRng, StdRng};
 use wasm_bindgen::prelude::*;
+use web_sys::window;
+use web_sys::Crypto;
 
 #[wasm_bindgen(module = "/js/demo.js")]
 extern "C" {
@@ -27,7 +29,12 @@ pub fn fill_random(buf: &mut [u8]) -> Result<(), RNGSourceError> {
 
 pub fn new_rng() -> Result<StdRng, RNGSourceError> {
     let mut seed = [0u8; 32];
-    fill_random(&mut seed)?;
+    window()
+        .unwrap()
+        .crypto()
+        .unwrap()
+        .get_random_values_with_u8_array(&mut seed)
+        .unwrap();
     let seed = unsafe {
         ::std::slice::from_raw_parts::<usize>(
             seed.as_ptr() as *const usize,
