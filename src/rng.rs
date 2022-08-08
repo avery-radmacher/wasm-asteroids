@@ -1,7 +1,5 @@
-extern crate rand;
-
-pub use self::rand::{distributions::Standard, rngs::SmallRng, Rng};
 use rand::SeedableRng;
+pub use rand::{distributions::Standard, rngs::SmallRng, Rng};
 use wasm_bindgen::prelude::*;
 use web_sys::window;
 
