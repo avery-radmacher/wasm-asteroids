@@ -11,13 +11,12 @@ extern "C" {
 #[derive(Debug)]
 pub enum RNGSourceError {}
 
-pub fn new_rng() -> Result<SmallRng, RNGSourceError> {
+pub fn new_rng() -> Option<SmallRng> {
     let mut seed = [0u8; 16];
-    window()
-        .unwrap()
+    window()?
         .crypto()
-        .unwrap()
+        .ok()?
         .get_random_values_with_u8_array(&mut seed)
-        .unwrap();
-    Ok(SmallRng::from_seed(seed))
+        .ok()?;
+    Some(SmallRng::from_seed(seed))
 }
