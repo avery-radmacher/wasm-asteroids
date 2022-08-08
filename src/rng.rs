@@ -8,9 +8,6 @@ extern "C" {
     fn js_fill_rand(buf: &mut [u8]) -> usize;
 }
 
-#[derive(Debug)]
-pub enum RNGSourceError {}
-
 pub fn new_rng() -> Option<SmallRng> {
     let mut seed = [0u8; 16];
     window()?
