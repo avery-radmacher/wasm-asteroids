@@ -1,6 +1,6 @@
 extern crate rand;
 
-pub use self::rand::{Rng, SeedableRng, StdRng};
+pub use self::rand::{distributions::Standard, rngs::SmallRng, Rng, SeedableRng};
 use wasm_bindgen::prelude::*;
 use web_sys::window;
 
@@ -12,19 +12,13 @@ extern "C" {
 #[derive(Debug)]
 pub enum RNGSourceError {}
 
-pub fn new_rng() -> Result<StdRng, RNGSourceError> {
-    let mut seed = [0u8; 32];
+pub fn new_rng() -> Result<SmallRng, RNGSourceError> {
+    let mut seed = [0u8; 16];
     window()
         .unwrap()
         .crypto()
         .unwrap()
         .get_random_values_with_u8_array(&mut seed)
         .unwrap();
-    let seed = unsafe {
-        ::std::slice::from_raw_parts::<usize>(
-            seed.as_ptr() as *const usize,
-            32 / ::std::mem::size_of::<usize>(),
-        )
-    };
-    Ok(StdRng::from_seed(seed))
+    Ok(SmallRng::from_seed(seed))
 }

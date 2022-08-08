@@ -1,7 +1,7 @@
 use crate::geom::{test_circle_point, test_circle_triangle};
 pub use crate::input::{InputIndex, Inputs};
 use crate::math::Vec2D;
-use crate::rng::{new_rng, Rng, StdRng};
+use crate::rng::{new_rng, Rng, SmallRng, Standard};
 use crate::ship::Ship;
 
 pub struct Config {
@@ -197,7 +197,7 @@ pub struct Game {
     pub asteroids: Vec<Asteroid>,
     pub inputs: Inputs,
     pub config: Config,
-    pub rng: StdRng,
+    pub rng: SmallRng,
 }
 
 fn collide_asteroid_bullet(asteroid: &Asteroid, bullet: &Bullet) -> bool {
@@ -251,14 +251,14 @@ impl Game {
             let mut pos;
             loop {
                 pos = Vec2D {
-                    x: field_size.x * self.rng.next_f64(),
-                    y: field_size.y * self.rng.next_f64(),
+                    x: field_size.x * self.rng.sample::<f64, _>(Standard),
+                    y: field_size.y * self.rng.sample::<f64, _>(Standard),
                 };
                 if (pos - self.ship.pos).len() > 300.0 {
                     break;
                 }
             }
-            let angle = PI * 2.0 * self.rng.next_f64();
+            let angle = PI * 2.0 * self.rng.sample::<f64, _>(Standard);
             self.asteroids.push(Asteroid {
                 pos: pos,
                 speed: Vec2D { x: 100.0, y: 0.0 }.rotate(angle),
