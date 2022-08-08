@@ -1,5 +1,5 @@
 use rand::SeedableRng;
-pub use rand::{distributions::Standard, rngs::SmallRng, Rng};
+pub use rand::{rngs::SmallRng, Rng};
 use web_sys::window;
 
 pub fn new_rng() -> Option<SmallRng> {

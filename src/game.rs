@@ -1,7 +1,7 @@
 use crate::geom::{test_circle_point, test_circle_triangle};
 pub use crate::input::{InputIndex, Inputs};
 use crate::math::Vec2D;
-use crate::rng::{new_rng, Rng, SmallRng, Standard};
+use crate::rng::{new_rng, Rng, SmallRng};
 use crate::ship::Ship;
 
 pub struct Config {
@@ -251,14 +251,14 @@ impl Game {
             let mut pos;
             loop {
                 pos = Vec2D {
-                    x: field_size.x * self.rng.sample::<f64, _>(Standard),
-                    y: field_size.y * self.rng.sample::<f64, _>(Standard),
+                    x: field_size.x * self.rng.gen::<f64>(),
+                    y: field_size.y * self.rng.gen::<f64>(),
                 };
                 if (pos - self.ship.pos).len() > 300.0 {
                     break;
                 }
             }
-            let angle = PI * 2.0 * self.rng.sample::<f64, _>(Standard);
+            let angle = PI * 2.0 * self.rng.gen::<f64>();
             self.asteroids.push(Asteroid {
                 pos: pos,
                 speed: Vec2D { x: 100.0, y: 0.0 }.rotate(angle),
