@@ -110,7 +110,7 @@ impl Bullet {
             speed: direction.scale(config.bullet_speed),
             lifetime: game.tick + (config.bullet_lifetime / config.delta_t) as u64,
             dead: false,
-            source: source,
+            source,
         }
     }
 }
@@ -166,7 +166,7 @@ pub struct Explosion {
 impl Explosion {
     pub fn new(pos: Vec2D, tick: u64, config: &Config) -> Explosion {
         Explosion {
-            pos: pos,
+            pos,
             start_tick: tick,
             lifetime: tick + ((config.explosion_life / config.delta_t) as u64),
         }
@@ -260,9 +260,9 @@ impl Game {
             }
             let angle = PI * 2.0 * self.rng.gen::<f64>();
             self.asteroids.push(Asteroid {
-                pos: pos,
+                pos,
                 speed: Vec2D { x: 100.0, y: 0.0 }.rotate(angle),
-                angle: angle,
+                angle,
                 angle_speed: 0.6,
                 size: 50.0,
                 style: 5,

@@ -31,7 +31,7 @@ pub enum Event {
 pub extern "C" fn event_loop_cb(id: u32, msg: u32, p0: u32, p1: u32, p2: u32) {
     EVENTLOOPS.with(|el| {
         let mut el = el.borrow_mut();
-        let mut fake_event_loop = EventLoop { id: id };
+        let mut fake_event_loop = EventLoop { id };
 
         let event = match msg {
             EVENT_ANIMATION_FRAME => Event::AnimationFrame,
@@ -70,7 +70,7 @@ impl EventLoop {
         EVENTLOOPS.with(|el| {
             el.borrow_mut().insert(id, cb);
         });
-        EventLoop { id: id }
+        EventLoop { id }
     }
 
     pub fn request_animation_frame(&mut self) {
