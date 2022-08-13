@@ -82,7 +82,7 @@ impl Config {
 pub enum BulletSource {
     Player,
     #[allow(dead_code)]
-    UFO,
+    Ufo,
 }
 
 pub struct Bullet {
@@ -152,8 +152,8 @@ impl Asteroid {
     }
 }
 
-pub struct UFO {}
-impl UFO {
+pub struct Ufo {}
+impl Ufo {
     pub fn tick(&mut self) {}
 }
 
@@ -185,7 +185,7 @@ pub enum GameState {
 pub struct Game {
     pub game_state: GameState,
     pub ship: Ship,
-    pub ufo: Option<UFO>,
+    pub ufo: Option<Ufo>,
     pub ufo_spawn_tick: u64,
     pub lives: u64,
     pub level: usize,
@@ -389,10 +389,10 @@ impl Game {
             let ufo = &mut self.ufo;
             let config = &self.config;
             let collide_ship_bullet = |_: &Ship, _: &Bullet| false;
-            let collide_ufo_bullet = |_: &UFO, _: &Bullet| false;
+            let collide_ufo_bullet = |_: &Ufo, _: &Bullet| false;
             for bullet in bullets.iter_mut() {
                 match bullet.source {
-                    BulletSource::UFO => {
+                    BulletSource::Ufo => {
                         if !ship.dead && collide_ship_bullet(ship, bullet) {
                             self.game_state = GameState::Respawning;
                             explosions.push(Explosion::new(ship.pos, tick, config));
@@ -424,7 +424,7 @@ impl Game {
             let ship = &mut self.ship;
             let ufo = &mut self.ufo;
 
-            let collide_asteroid_ufo = |_: &Asteroid, _: &UFO| false;
+            let collide_asteroid_ufo = |_: &Asteroid, _: &Ufo| false;
 
             for asteroid in asteroids.iter_mut() {
                 let mut collided = false;
