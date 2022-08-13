@@ -300,7 +300,7 @@ impl Game {
                 }
             }
             GameState::Running => {
-                if self.asteroids.len() == 0 {
+                if self.asteroids.is_empty() {
                     self.level += 1;
                     self.spawn_level();
                 }
