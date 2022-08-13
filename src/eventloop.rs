@@ -37,12 +37,12 @@ pub extern "C" fn event_loop_cb(id: u32, msg: u32, p0: u32, p1: u32, p2: u32) {
             EVENT_ANIMATION_FRAME => Event::AnimationFrame,
             EVENT_KEY_DOWN => Event::KeyDown {
                 code: p0,
-                chr: ::std::char::from_u32(p1),
+                chr: p1.try_into().ok(),
                 flags: p2,
             },
             EVENT_KEY_UP => Event::KeyUp {
                 code: p0,
-                chr: ::std::char::from_u32(p1),
+                chr: p1.try_into().ok(),
                 flags: p2,
             },
             _ => return,

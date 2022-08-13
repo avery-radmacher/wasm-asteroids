@@ -229,7 +229,7 @@ impl Game {
             next_bullet_tick: 0,
             ship: Ship::new(),
             ufo: None,
-            ufo_spawn_tick: ::std::u64::MAX,
+            ufo_spawn_tick: std::u64::MAX,
             explosions: Vec::new(),
             bullets: Vec::new(),
             asteroids: Vec::new(),
@@ -295,7 +295,7 @@ impl Game {
                     self.lives -= 1;
                     ship.speed = Vec2D::zero();
                     ship.pos = self.config.field_size.scale(0.5);
-                    ship.angle = ::std::f64::consts::PI * -0.5;
+                    ship.angle = std::f64::consts::PI * -0.5;
                     ship.dead = false;
                 }
             }
