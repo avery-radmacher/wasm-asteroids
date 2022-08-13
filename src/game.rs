@@ -363,8 +363,8 @@ impl Game {
                     if collide_asteroid_bullet(asteroid, bullet) {
                         if !asteroid.dead {
                             score_change += 100;
-                            new_asteroids.append(&mut asteroid.split_off(&config));
-                            new_explosions.push(Explosion::new(asteroid.pos, tick, &config));
+                            new_asteroids.append(&mut asteroid.split_off(config));
+                            new_explosions.push(Explosion::new(asteroid.pos, tick, config));
                         }
                         asteroid.dead = true;
                         bullet.dead = true;
@@ -431,8 +431,8 @@ impl Game {
 
                 if !ship.dead && collide_asteroid_ship(asteroid, ship) {
                     self.game_state = GameState::Respawning;
-                    explosions.push(Explosion::new(ship.pos, tick, &config));
-                    explosions.push(Explosion::new(asteroid.pos, tick, &config));
+                    explosions.push(Explosion::new(ship.pos, tick, config));
+                    explosions.push(Explosion::new(asteroid.pos, tick, config));
                     ship.dead = true;
                     collided = true;
                 }
@@ -446,7 +446,7 @@ impl Game {
                 }
 
                 if collided && !asteroid.dead {
-                    new_asteroids.append(&mut asteroid.split_off(&config));
+                    new_asteroids.append(&mut asteroid.split_off(config));
                     asteroid.dead = true;
                 }
             }
