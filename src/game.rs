@@ -445,11 +445,9 @@ impl Game {
                     collided = true;
                 }
 
-                if collided {
-                    if !asteroid.dead {
-                        new_asteroids.append(&mut asteroid.split_off(&config));
-                        asteroid.dead = true;
-                    }
+                if collided && !asteroid.dead {
+                    new_asteroids.append(&mut asteroid.split_off(&config));
+                    asteroid.dead = true;
                 }
             }
 
