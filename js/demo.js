@@ -84,23 +84,3 @@ export const { event_loop_new, event_loop_raf } = (() => {
 })();
 
 export const svg_set_path = (str) => window.path.setAttributeNS(null, 'd', str);
-
-export const js_fill_rand = (slice) => {
-  const OK = 0;
-  const RANGE_ERROR = 1;
-  const QUOTA_ERROR = 2;
-
-  try {
-    window.crypto.getRandomValues(slice);
-  } catch (e) {
-    if (e instanceof RangeError) {
-      return RANGE_ERROR;
-    } else if (e instanceof DOMException && x.code === DOMException.QUOTA_EXCEEDED_ERR) {
-      return QUOTA_ERROR;
-    } else {
-      throw e;
-    }
-  }
-
-  return OK;
-};
