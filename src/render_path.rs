@@ -199,7 +199,7 @@ fn render_score(buf: &mut String, mut score: u64) {
         digits.push(score % 10);
         score /= 10;
     }
-    if digits.len() == 0 {
+    if digits.is_empty() {
         digits.push(0);
     }
     const DIGIT_SCALE: f64 = 10.0;
