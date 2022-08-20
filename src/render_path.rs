@@ -2,6 +2,17 @@ use crate::game::{Asteroid, Bullet, Explosion, Game, InputIndex};
 use crate::math::Vec2D;
 use std::fmt::Write;
 
+fn draw(buf: &mut String, line: bool, point: Vec2D) {
+    write!(
+        buf,
+        "{}{:.2} {:.2} ",
+        if line { 'L' } else { 'M' },
+        point.x,
+        point.y
+    )
+    .expect("could not write string");
+}
+
 const SHIP_POINTS: &[Vec2D] = &[
     Vec2D { x: 10.0, y: 0.0 },
     Vec2D { x: -10.0, y: -5.0 },
@@ -24,15 +35,13 @@ fn render_ship(buf: &mut String, game: &Game) {
     }
     let inputs = &game.inputs;
     for (i, p) in SHIP_POINTS.iter().enumerate() {
-        let c = if i == 0 { 'M' } else { 'L' };
         let p_c = p.scale(2.0).rotate(ship.angle) + ship.pos;
-        write!(buf, "{}{:.2} {:.2} ", c, p_c.x, p_c.y).expect("could not write string?");
+        draw(buf, i != 0, p_c);
     }
     if inputs.is_down(InputIndex::Forward) || inputs.is_down(InputIndex::Backward) {
         for (i, p) in FLARE.iter().enumerate() {
-            let c = if i == 0 { 'M' } else { 'L' };
             let p_c = p.scale(2.0).rotate(ship.angle) + ship.pos;
-            write!(buf, "{}{:.2} {:.2} ", c, p_c.x, p_c.y).expect("could not write string?");
+            draw(buf, i != 0, p_c);
         }
     }
 }
@@ -41,12 +50,8 @@ fn render_bullet(buf: &mut String, bullet: &Bullet) {
     let offset = Vec2D::zero();
     let start = bullet.pos + offset;
     let end = bullet.pos + bullet.speed.normalize().scale(5.0);
-    write!(
-        buf,
-        "M{:.2} {:.2} L{:.2} {:.2} ",
-        start.x, start.y, end.x, end.y
-    )
-    .expect("could not write string?");
+    draw(buf, false, start);
+    draw(buf, true, end);
 }
 
 fn render_asteroid(buf: &mut String, asteroid: &Asteroid) {
@@ -56,9 +61,8 @@ fn render_asteroid(buf: &mut String, asteroid: &Asteroid) {
     let angle = std::f64::consts::PI * 2.0 / (cnt as f64);
     let one = Vec2D::one().scale(asteroid.size).rotate(asteroid.angle);
     for i in 0..(cnt + 1) {
-        let c = if i == 0 { 'M' } else { 'L' };
         let p = mid + one.rotate(angle * (i as f64));
-        write!(buf, "{}{:.2} {:.2}", c, p.x, p.y).expect("could not write string?");
+        draw(buf, i != 0, p);
     }
 }
 
@@ -69,9 +73,8 @@ fn render_lives(buf: &mut String, lives: u64) {
         let y = -50.0;
         let x = ((l + 1) as f64) * LIFE_STEP;
         for (i, p) in SHIP_POINTS.iter().enumerate() {
-            let c = if i == 0 { 'M' } else { 'L' };
             let p_c = p.scale(2.0).rotate(UP_ANGLE) + Vec2D { x, y };
-            write!(buf, "{}{:.2} {:.2} ", c, p_c.x, p_c.y).expect("could not write string?");
+            draw(buf, i != 0, p_c);
         }
     }
 }
@@ -90,12 +93,8 @@ fn render_explosion(buf: &mut String, explosion: &Explosion, tick: u64) {
         let start = dir.scale(state * EXPLOSION_RADIUS) + explosion.pos;
         let end = dir.scale(state * EXPLOSION_RADIUS + EXPLOSION_PARTICLE_LENGTH * (1.0 + state))
             + explosion.pos;
-        write!(
-            buf,
-            "M {:.2} {:.2} L {:.2} {:.2}",
-            start.x, start.y, end.x, end.y
-        )
-        .expect("could not write string?");
+        draw(buf, false, start);
+        draw(buf, true, end);
     }
 }
 
@@ -213,8 +212,7 @@ fn render_score(buf: &mut String, mut score: u64) {
                     x: DIGIT_RIGHTMOST + (idx as f64) * DIGIT_STEP,
                     y: -DIGIT_SCALE * 5.0,
                 };
-            let c = if i == 0 { 'M' } else { 'L' };
-            write!(buf, "{} {:.2} {:.2} ", c, p.x, p.y).expect("could not write string?");
+            draw(buf, i != 0, p);
         }
     }
 }
