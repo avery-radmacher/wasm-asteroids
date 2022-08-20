@@ -53,25 +53,16 @@ fn render_ship(buf: &mut String, game: &Game) {
     if ship.dead {
         return;
     }
+    draw_object(buf, SHIP_POINTS.to_vec(), 2.0, ship.angle, ship.pos);
     let inputs = &game.inputs;
-    for (i, p) in SHIP_POINTS.iter().enumerate() {
-        let p_c = p.scale(2.0).rotate(ship.angle) + ship.pos;
-        draw(buf, i != 0, p_c);
-    }
     if inputs.is_down(InputIndex::Forward) || inputs.is_down(InputIndex::Backward) {
-        for (i, p) in FLARE.iter().enumerate() {
-            let p_c = p.scale(2.0).rotate(ship.angle) + ship.pos;
-            draw(buf, i != 0, p_c);
-        }
+        draw_object(buf, FLARE.to_vec(), 2.0, ship.angle, ship.pos);
     }
 }
 
 fn render_bullet(buf: &mut String, bullet: &Bullet) {
-    let offset = Vec2D::zero();
-    let start = bullet.pos + offset;
-    let end = bullet.pos + bullet.speed.normalize().scale(5.0);
-    draw(buf, false, start);
-    draw(buf, true, end);
+    let tail = bullet.pos + bullet.speed.normalize().scale(5.0);
+    draw_points(buf, vec![bullet.pos, tail]);
 }
 
 fn render_asteroid(buf: &mut String, asteroid: &Asteroid) {
