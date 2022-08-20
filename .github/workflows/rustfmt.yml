@@ -1,0 +1,19 @@
+name: format
+
+on:
+  pull_request:
+    branches: ['master']
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  rustfmt:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup
+        run: rustup target add wasm32-unknown-unknown
+      - name: Build
+        run: cargo fmt --all -- --check

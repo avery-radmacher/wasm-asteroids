@@ -78,7 +78,7 @@ impl Config {
     }
 }
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Eq)]
 pub enum BulletSource {
     Player,
     #[allow(dead_code)]
@@ -326,7 +326,7 @@ impl Game {
             for bullet in self.bullets.iter_mut() {
                 bullet.tick(config);
             }
-            for ufo in self.ufo.iter_mut() {
+            if let Some(ufo) = self.ufo.as_mut() {
                 ufo.tick();
             }
         }
