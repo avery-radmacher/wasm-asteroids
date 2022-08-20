@@ -66,15 +66,20 @@ fn render_bullet(buf: &mut String, bullet: &Bullet) {
 }
 
 fn render_asteroid(buf: &mut String, asteroid: &Asteroid) {
-    let offset = Vec2D::zero();
-    let mid = asteroid.pos + offset;
     let cnt = asteroid.style;
-    let angle = std::f64::consts::PI * 2.0 / (cnt as f64);
-    let one = Vec2D::one().scale(asteroid.size).rotate(asteroid.angle);
-    for i in 0..(cnt + 1) {
-        let p = mid + one.rotate(angle * (i as f64));
-        draw(buf, i != 0, p);
-    }
+    let angle = std::f64::consts::TAU / (cnt as f64);
+    let asteroid_points = vec![Vec2D::one(); cnt + 1]
+        .iter()
+        .enumerate()
+        .map(|(i, v)| v.rotate(angle * (i as f64)))
+        .collect();
+    draw_object(
+        buf,
+        asteroid_points,
+        asteroid.size,
+        asteroid.angle,
+        asteroid.pos,
+    );
 }
 
 fn render_lives(buf: &mut String, lives: u64) {
@@ -104,8 +109,7 @@ fn render_explosion(buf: &mut String, explosion: &Explosion, tick: u64) {
         let start = dir.scale(state * EXPLOSION_RADIUS) + explosion.pos;
         let end = dir.scale(state * EXPLOSION_RADIUS + EXPLOSION_PARTICLE_LENGTH * (1.0 + state))
             + explosion.pos;
-        draw(buf, false, start);
-        draw(buf, true, end);
+        draw_points(buf, vec![start, end]);
     }
 }
 
