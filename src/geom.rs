@@ -13,7 +13,7 @@ fn closest_triangle_point(p: Vec2D, a: Vec2D, b: Vec2D, c: Vec2D) -> Vec2D {
     // check vertex regions
     // Compute parametric position s for projection P’ of P on AB,
     // P’ = A + s*AB, s = c_nom / (c_nom + c_denom)
-    let c_nom = ap.dot(ab);
+    let c_nom  = ap.dot(ab);
     let c_denom = -bp.dot(ab);
     // Compute parametric position t for projection P’ of P on CA,
     // P’ = C + t*CA, t = b_nom / (b_nom + b_denom)
