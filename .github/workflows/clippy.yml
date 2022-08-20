@@ -1,4 +1,4 @@
-name: Clippy
+name: clippy
 
 on:
   pull_request:
@@ -8,7 +8,7 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  Clippy:
+  clippy:
     runs-on: ubuntu-latest
 
     steps:
