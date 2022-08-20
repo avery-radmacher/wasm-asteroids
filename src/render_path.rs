@@ -13,6 +13,16 @@ fn draw(buf: &mut String, line: bool, point: Vec2D) {
     .expect("could not write string");
 }
 
+fn draw_points(buf: &mut String, points: Vec<Vec2D>) {
+    if (points.is_empty()) {
+        return;
+    }
+    draw(buf, false, points[0]);
+    for &point in &points[1..] {
+        draw(buf, true, point);
+    }
+}
+
 const SHIP_POINTS: &[Vec2D] = &[
     Vec2D { x: 10.0, y: 0.0 },
     Vec2D { x: -10.0, y: -5.0 },
