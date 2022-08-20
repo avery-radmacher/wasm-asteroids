@@ -78,11 +78,11 @@ impl Config {
     }
 }
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Eq)]
 pub enum BulletSource {
     Player,
     #[allow(dead_code)]
-    UFO,
+    Ufo,
 }
 
 pub struct Bullet {
@@ -110,7 +110,7 @@ impl Bullet {
             speed: direction.scale(config.bullet_speed),
             lifetime: game.tick + (config.bullet_lifetime / config.delta_t) as u64,
             dead: false,
-            source: source,
+            source,
         }
     }
 }
@@ -152,8 +152,8 @@ impl Asteroid {
     }
 }
 
-pub struct UFO {}
-impl UFO {
+pub struct Ufo {}
+impl Ufo {
     pub fn tick(&mut self) {}
 }
 
@@ -166,7 +166,7 @@ pub struct Explosion {
 impl Explosion {
     pub fn new(pos: Vec2D, tick: u64, config: &Config) -> Explosion {
         Explosion {
-            pos: pos,
+            pos,
             start_tick: tick,
             lifetime: tick + ((config.explosion_life / config.delta_t) as u64),
         }
@@ -185,7 +185,7 @@ pub enum GameState {
 pub struct Game {
     pub game_state: GameState,
     pub ship: Ship,
-    pub ufo: Option<UFO>,
+    pub ufo: Option<Ufo>,
     pub ufo_spawn_tick: u64,
     pub lives: u64,
     pub level: usize,
@@ -260,9 +260,9 @@ impl Game {
             }
             let angle = PI * 2.0 * self.rng.gen::<f64>();
             self.asteroids.push(Asteroid {
-                pos: pos,
+                pos,
                 speed: Vec2D { x: 100.0, y: 0.0 }.rotate(angle),
-                angle: angle,
+                angle,
                 angle_speed: 0.6,
                 size: 50.0,
                 style: 5,
@@ -300,7 +300,7 @@ impl Game {
                 }
             }
             GameState::Running => {
-                if self.asteroids.len() == 0 {
+                if self.asteroids.is_empty() {
                     self.level += 1;
                     self.spawn_level();
                 }
@@ -326,7 +326,7 @@ impl Game {
             for bullet in self.bullets.iter_mut() {
                 bullet.tick(config);
             }
-            for ufo in self.ufo.iter_mut() {
+            if let Some(ufo) = self.ufo.as_mut() {
                 ufo.tick();
             }
         }
@@ -363,8 +363,8 @@ impl Game {
                     if collide_asteroid_bullet(asteroid, bullet) {
                         if !asteroid.dead {
                             score_change += 100;
-                            new_asteroids.append(&mut asteroid.split_off(&config));
-                            new_explosions.push(Explosion::new(asteroid.pos, tick, &config));
+                            new_asteroids.append(&mut asteroid.split_off(config));
+                            new_explosions.push(Explosion::new(asteroid.pos, tick, config));
                         }
                         asteroid.dead = true;
                         bullet.dead = true;
@@ -389,10 +389,10 @@ impl Game {
             let ufo = &mut self.ufo;
             let config = &self.config;
             let collide_ship_bullet = |_: &Ship, _: &Bullet| false;
-            let collide_ufo_bullet = |_: &UFO, _: &Bullet| false;
+            let collide_ufo_bullet = |_: &Ufo, _: &Bullet| false;
             for bullet in bullets.iter_mut() {
                 match bullet.source {
-                    BulletSource::UFO => {
+                    BulletSource::Ufo => {
                         if !ship.dead && collide_ship_bullet(ship, bullet) {
                             self.game_state = GameState::Respawning;
                             explosions.push(Explosion::new(ship.pos, tick, config));
@@ -424,15 +424,15 @@ impl Game {
             let ship = &mut self.ship;
             let ufo = &mut self.ufo;
 
-            let collide_asteroid_ufo = |_: &Asteroid, _: &UFO| false;
+            let collide_asteroid_ufo = |_: &Asteroid, _: &Ufo| false;
 
             for asteroid in asteroids.iter_mut() {
                 let mut collided = false;
 
                 if !ship.dead && collide_asteroid_ship(asteroid, ship) {
                     self.game_state = GameState::Respawning;
-                    explosions.push(Explosion::new(ship.pos, tick, &config));
-                    explosions.push(Explosion::new(asteroid.pos, tick, &config));
+                    explosions.push(Explosion::new(ship.pos, tick, config));
+                    explosions.push(Explosion::new(asteroid.pos, tick, config));
                     ship.dead = true;
                     collided = true;
                 }
@@ -445,11 +445,9 @@ impl Game {
                     collided = true;
                 }
 
-                if collided {
-                    if !asteroid.dead {
-                        new_asteroids.append(&mut asteroid.split_off(&config));
-                        asteroid.dead = true;
-                    }
+                if collided && !asteroid.dead {
+                    new_asteroids.append(&mut asteroid.split_off(config));
+                    asteroid.dead = true;
                 }
             }
 
