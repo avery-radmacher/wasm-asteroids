@@ -88,10 +88,7 @@ fn render_lives(buf: &mut String, lives: u64) {
     for l in 0..lives {
         let y = -50.0;
         let x = ((l + 1) as f64) * LIFE_STEP;
-        for (i, p) in SHIP_POINTS.iter().enumerate() {
-            let p_c = p.scale(2.0).rotate(UP_ANGLE) + Vec2D { x, y };
-            draw(buf, i != 0, p_c);
-        }
+        draw_object(buf, SHIP_POINTS.to_vec(), 2.0, UP_ANGLE, Vec2D { x, y });
     }
 }
 
