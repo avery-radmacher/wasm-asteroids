@@ -23,6 +23,16 @@ fn draw_points(buf: &mut String, points: Vec<Vec2D>) {
     }
 }
 
+fn draw_object(buf: &mut String, points: Vec<Vec2D>, scale: f64, rotation: f64, offset: Vec2D) {
+    draw_points(
+        buf,
+        points
+            .iter()
+            .map(|p| p.scale(scale).rotate(rotation) + offset)
+            .collect(),
+    );
+}
+
 const SHIP_POINTS: &[Vec2D] = &[
     Vec2D { x: 10.0, y: 0.0 },
     Vec2D { x: -10.0, y: -5.0 },
