@@ -53,7 +53,7 @@ fn render_asteroid(buf: &mut String, asteroid: &Asteroid) {
     let offset = Vec2D::zero();
     let mid = asteroid.pos + offset;
     let cnt = asteroid.style;
-    let angle = ::std::f64::consts::PI * 2.0 / (cnt as f64);
+    let angle = std::f64::consts::PI * 2.0 / (cnt as f64);
     let one = Vec2D::one().scale(asteroid.size).rotate(asteroid.angle);
     for i in 0..(cnt + 1) {
         let c = if i == 0 { 'M' } else { 'L' };
@@ -64,7 +64,7 @@ fn render_asteroid(buf: &mut String, asteroid: &Asteroid) {
 
 fn render_lives(buf: &mut String, lives: u64) {
     const LIFE_STEP: f64 = 40.0;
-    const UP_ANGLE: f64 = ::std::f64::consts::PI * -0.5;
+    const UP_ANGLE: f64 = std::f64::consts::PI * -0.5;
     for l in 0..lives {
         let y = -50.0;
         let x = ((l + 1) as f64) * LIFE_STEP;
@@ -80,7 +80,7 @@ fn render_explosion(buf: &mut String, explosion: &Explosion, tick: u64) {
     const EXPLOSION_RADIUS: f64 = 30.0;
     const EXPLOSION_PARTICLES: usize = 11;
     const EXPLOSION_PARTICLE_LENGTH: f64 = 10.0;
-    let explosion_da = ::std::f64::consts::PI * 2.0 / (EXPLOSION_PARTICLES as f64);
+    let explosion_da = std::f64::consts::PI * 2.0 / (EXPLOSION_PARTICLES as f64);
     let state = ((tick - explosion.start_tick) as f64)
         / ((explosion.lifetime - explosion.start_tick) as f64);
 
