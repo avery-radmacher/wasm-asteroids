@@ -14,7 +14,7 @@ fn draw(buf: &mut String, line: bool, point: Vec2D) {
 }
 
 fn draw_points(buf: &mut String, points: Vec<Vec2D>) {
-    if (points.is_empty()) {
+    if points.is_empty() {
         return;
     }
     draw(buf, false, points[0]);
