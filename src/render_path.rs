@@ -23,41 +23,31 @@ fn draw_points(buf: &mut String, points: Vec<Vec2D>) {
     }
 }
 
+fn calculate_wrap(points: &Vec<Vec2D>, field_size: &Vec2D, x: bool) -> f64 {
+    let field_size = if x { field_size.x } else { field_size.y };
+    points
+        .iter()
+        .map(|point| if x { point.x } else { point.y })
+        .filter_map(|x| {
+            if x >= field_size {
+                Some(-1.0)
+            } else if x < 0.0 {
+                Some(1.0)
+            } else {
+                None
+            }
+        })
+        .nth(0)
+        .unwrap_or_default()
+}
+
 fn translate(points: &Vec<Vec2D>, translation: Vec2D) -> Vec<Vec2D> {
     points.iter().map(|&point| point + translation).collect()
 }
 
 fn draw_points_wrapping(buf: &mut String, points: Vec<Vec2D>, field_size: Vec2D) {
-    let x_wrap = points
-        .iter()
-        .map(|point| point.x)
-        .map(|x| {
-            if x >= field_size.x {
-                -1.0
-            } else if x < 0.0 {
-                1.0
-            } else {
-                0.0
-            }
-        })
-        .filter(|&wrap| wrap != 0.0)
-        .nth(0)
-        .unwrap_or_default();
-    let y_wrap = points
-        .iter()
-        .map(|point| point.y)
-        .map(|y| {
-            if y >= field_size.y {
-                -1.0
-            } else if y < 0.0 {
-                1.0
-            } else {
-                0.0
-            }
-        })
-        .filter(|&wrap| wrap != 0.0)
-        .nth(0)
-        .unwrap_or_default();
+    let x_wrap = calculate_wrap(&points, &field_size, true);
+    let y_wrap = calculate_wrap(&points, &field_size, false);
     if x_wrap != 0.0 {
         if y_wrap != 0.0 {
             let translated_points = translate(
