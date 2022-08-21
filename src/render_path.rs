@@ -34,7 +34,7 @@ fn draw_points_wrapping(buf: &mut String, points: Vec<Vec2D>, field_size: Vec2D)
         .map(|x| {
             if x >= field_size.x {
                 -1.0
-            } else if x < field_size.x {
+            } else if x < 0.0 {
                 1.0
             } else {
                 0.0
@@ -49,7 +49,7 @@ fn draw_points_wrapping(buf: &mut String, points: Vec<Vec2D>, field_size: Vec2D)
         .map(|y| {
             if y >= field_size.y {
                 -1.0
-            } else if y < field_size.y {
+            } else if y < 0.0 {
                 1.0
             } else {
                 0.0
