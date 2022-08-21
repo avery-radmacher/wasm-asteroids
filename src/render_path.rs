@@ -2,7 +2,7 @@ use crate::game::{Asteroid, Bullet, Explosion, Game, InputIndex};
 use crate::math::Vec2D;
 use std::fmt::Write;
 
-fn draw(buf: &mut String, line: bool, point: Vec2D) {
+fn draw(buf: &mut String, line: bool, point: &Vec2D) {
     write!(
         buf,
         "{}{:.2} {:.2} ",
@@ -13,13 +13,13 @@ fn draw(buf: &mut String, line: bool, point: Vec2D) {
     .expect("could not write string");
 }
 
-fn draw_points(buf: &mut String, points: Vec<Vec2D>) {
+fn draw_points(buf: &mut String, points: &Vec<Vec2D>) {
     if points.is_empty() {
         return;
     }
-    draw(buf, false, points[0]);
+    draw(buf, false, &points[0]);
     for &point in &points[1..] {
-        draw(buf, true, point);
+        draw(buf, true, &point);
     }
 }
 
@@ -41,59 +41,59 @@ fn calculate_wrap(points: &Vec<Vec2D>, field_size: &Vec2D, x: bool) -> f64 {
         .unwrap_or_default()
 }
 
-fn translate(points: &Vec<Vec2D>, translation: Vec2D) -> Vec<Vec2D> {
-    points.iter().map(|&point| point + translation).collect()
+fn translate(points: &Vec<Vec2D>, translation: &Vec2D) -> Vec<Vec2D> {
+    points.iter().map(|&point| point + *translation).collect()
 }
 
-fn draw_points_wrapping(buf: &mut String, points: Vec<Vec2D>, field_size: Vec2D) {
+fn draw_points_wrapping(buf: &mut String, points: &Vec<Vec2D>, field_size: &Vec2D) {
     let x_wrap = calculate_wrap(&points, &field_size, true);
     let y_wrap = calculate_wrap(&points, &field_size, false);
     if x_wrap != 0.0 {
         if y_wrap != 0.0 {
             let translated_points = translate(
                 &points,
-                Vec2D {
+                &Vec2D {
                     x: field_size.x * x_wrap,
                     y: field_size.y * y_wrap,
                 },
             );
-            draw_points(buf, translated_points);
+            draw_points(buf, &translated_points);
         }
         let translated_points = translate(
             &points,
-            Vec2D {
+            &Vec2D {
                 x: field_size.x * x_wrap,
                 y: 0.0,
             },
         );
-        draw_points(buf, translated_points);
+        draw_points(buf, &translated_points);
     }
     if y_wrap != 0.0 {
         let translated_points = translate(
             &points,
-            Vec2D {
+            &Vec2D {
                 x: 0.0,
                 y: field_size.y * y_wrap,
             },
         );
-        draw_points(buf, translated_points);
+        draw_points(buf, &translated_points);
     }
     draw_points(buf, points);
 }
 
 fn draw_object(
     buf: &mut String,
-    points: Vec<Vec2D>,
+    points: &Vec<Vec2D>,
     scale: f64,
     rotation: f64,
-    offset: Vec2D,
-    field_size: Vec2D,
+    offset: &Vec2D,
+    field_size: &Vec2D,
 ) {
     draw_points_wrapping(
         buf,
-        points
+        &points
             .iter()
-            .map(|p| p.scale(scale).rotate(rotation) + offset)
+            .map(|p| p.scale(scale).rotate(rotation) + *offset)
             .collect(),
         field_size,
     );
@@ -121,31 +121,31 @@ fn render_ship(buf: &mut String, game: &Game) {
     }
     draw_object(
         buf,
-        SHIP_POINTS.to_vec(),
+        &SHIP_POINTS.to_vec(),
         2.0,
         ship.angle,
-        ship.pos,
-        game.config.field_size,
+        &ship.pos,
+        &game.config.field_size,
     );
     let inputs = &game.inputs;
     if inputs.is_down(InputIndex::Forward) || inputs.is_down(InputIndex::Backward) {
         draw_object(
             buf,
-            FLARE.to_vec(),
+            &FLARE.to_vec(),
             2.0,
             ship.angle,
-            ship.pos,
-            game.config.field_size,
+            &ship.pos,
+            &game.config.field_size,
         );
     }
 }
 
-fn render_bullet(buf: &mut String, bullet: &Bullet, field_size: Vec2D) {
+fn render_bullet(buf: &mut String, bullet: &Bullet, field_size: &Vec2D) {
     let tail = bullet.pos + bullet.speed.normalize().scale(5.0);
-    draw_points_wrapping(buf, vec![bullet.pos, tail], field_size);
+    draw_points_wrapping(buf, &vec![bullet.pos, tail], field_size);
 }
 
-fn render_asteroid(buf: &mut String, asteroid: &Asteroid, field_size: Vec2D) {
+fn render_asteroid(buf: &mut String, asteroid: &Asteroid, field_size: &Vec2D) {
     let cnt = asteroid.style;
     let angle = std::f64::consts::TAU / (cnt as f64);
     let asteroid_points = vec![Vec2D::one(); cnt + 1]
@@ -155,15 +155,15 @@ fn render_asteroid(buf: &mut String, asteroid: &Asteroid, field_size: Vec2D) {
         .collect();
     draw_object(
         buf,
-        asteroid_points,
+        &asteroid_points,
         asteroid.size,
         asteroid.angle,
-        asteroid.pos,
+        &asteroid.pos,
         field_size,
     );
 }
 
-fn render_lives(buf: &mut String, lives: u64, field_size: Vec2D) {
+fn render_lives(buf: &mut String, lives: u64, field_size: &Vec2D) {
     const LIFE_STEP: f64 = 40.0;
     const UP_ANGLE: f64 = std::f64::consts::PI * -0.5;
     for l in 0..lives {
@@ -171,16 +171,16 @@ fn render_lives(buf: &mut String, lives: u64, field_size: Vec2D) {
         let x = ((l + 1) as f64) * LIFE_STEP;
         draw_object(
             buf,
-            SHIP_POINTS.to_vec(),
+            &SHIP_POINTS.to_vec(),
             2.0,
             UP_ANGLE,
-            Vec2D { x, y },
+            &Vec2D { x, y },
             field_size,
         );
     }
 }
 
-fn render_explosion(buf: &mut String, explosion: &Explosion, tick: u64, field_size: Vec2D) {
+fn render_explosion(buf: &mut String, explosion: &Explosion, tick: u64, field_size: &Vec2D) {
     const EXPLOSION_RADIUS: f64 = 30.0;
     const EXPLOSION_PARTICLES: usize = 11;
     const EXPLOSION_PARTICLE_LENGTH: f64 = 10.0;
@@ -194,7 +194,7 @@ fn render_explosion(buf: &mut String, explosion: &Explosion, tick: u64, field_si
         let start = dir.scale(state * EXPLOSION_RADIUS) + explosion.pos;
         let end = dir.scale(state * EXPLOSION_RADIUS + EXPLOSION_PARTICLE_LENGTH * (1.0 + state))
             + explosion.pos;
-        draw_points_wrapping(buf, vec![start, end], field_size);
+        draw_points_wrapping(buf, &vec![start, end], field_size);
     }
 }
 
@@ -312,23 +312,23 @@ fn render_score(buf: &mut String, mut score: u64) {
                     x: DIGIT_RIGHTMOST + (idx as f64) * DIGIT_STEP,
                     y: -DIGIT_SCALE * 5.0,
                 };
-            draw(buf, i != 0, p);
+            draw(buf, i != 0, &p);
         }
     }
 }
 
 pub fn render_game(buf: &mut String, game: &Game) {
     let field_size = game.config.field_size;
-    render_lives(buf, game.lives, field_size);
+    render_lives(buf, game.lives, &field_size);
     render_ship(buf, game);
     for bullet in game.bullets.iter() {
-        render_bullet(buf, bullet, field_size);
+        render_bullet(buf, bullet, &field_size);
     }
     for asteroid in game.asteroids.iter() {
-        render_asteroid(buf, asteroid, field_size);
+        render_asteroid(buf, asteroid, &field_size);
     }
     for explosion in game.explosions.iter() {
-        render_explosion(buf, explosion, game.tick, field_size);
+        render_explosion(buf, explosion, game.tick, &field_size);
     }
     render_score(buf, game.score);
 }
