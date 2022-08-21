@@ -23,6 +23,10 @@ fn draw_points(buf: &mut String, points: Vec<Vec2D>, _field_size: Vec2D) {
     }
 }
 
+fn translate(points: &Vec<Vec2D>, translation: Vec2D) -> Vec<Vec2D> {
+    points.iter().map(|&point| point + translation).collect()
+}
+
 fn draw_points_wrapping(buf: &mut String, points: Vec<Vec2D>, _field_size: Vec2D) {
     let x_wrap = points
         .iter()
@@ -56,41 +60,32 @@ fn draw_points_wrapping(buf: &mut String, points: Vec<Vec2D>, _field_size: Vec2D
         .unwrap_or_default();
     if x_wrap != 0.0 {
         if y_wrap != 0.0 {
-            let translated_points = points
-                .iter()
-                .map(|&point| {
-                    point
-                        + Vec2D {
-                            x: _field_size.x * x_wrap,
-                            y: _field_size.y * y_wrap,
-                        }
-                })
-                .collect();
+            let translated_points = translate(
+                &points,
+                Vec2D {
+                    x: _field_size.x * x_wrap,
+                    y: _field_size.y * y_wrap,
+                },
+            );
             draw_points(buf, translated_points, _field_size);
         }
-        let translated_points = points
-            .iter()
-            .map(|&point| {
-                point
-                    + Vec2D {
-                        x: _field_size.x * x_wrap,
-                        y: 0.0,
-                    }
-            })
-            .collect();
+        let translated_points = translate(
+            &points,
+            Vec2D {
+                x: _field_size.x * x_wrap,
+                y: 0.0,
+            },
+        );
         draw_points(buf, translated_points, _field_size);
     }
     if y_wrap != 0.0 {
-        let translated_points = points
-            .iter()
-            .map(|&point| {
-                point
-                    + Vec2D {
-                        x: 0.0,
-                        y: _field_size.y * y_wrap,
-                    }
-            })
-            .collect();
+        let translated_points = translate(
+            &points,
+            Vec2D {
+                x: 0.0,
+                y: _field_size.y * y_wrap,
+            },
+        );
         draw_points(buf, translated_points, _field_size);
     }
     draw_points(buf, points, _field_size);
