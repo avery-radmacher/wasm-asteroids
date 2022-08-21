@@ -13,7 +13,7 @@ fn draw(buf: &mut String, line: bool, point: Vec2D) {
     .expect("could not write string");
 }
 
-fn draw_points(buf: &mut String, points: Vec<Vec2D>, _field_size: Vec2D) {
+fn draw_points(buf: &mut String, points: Vec<Vec2D>) {
     if points.is_empty() {
         return;
     }
@@ -27,14 +27,14 @@ fn translate(points: &Vec<Vec2D>, translation: Vec2D) -> Vec<Vec2D> {
     points.iter().map(|&point| point + translation).collect()
 }
 
-fn draw_points_wrapping(buf: &mut String, points: Vec<Vec2D>, _field_size: Vec2D) {
+fn draw_points_wrapping(buf: &mut String, points: Vec<Vec2D>, field_size: Vec2D) {
     let x_wrap = points
         .iter()
         .map(|point| point.x)
         .map(|x| {
-            if x >= _field_size.x {
+            if x >= field_size.x {
                 -1.0
-            } else if x < _field_size.x {
+            } else if x < field_size.x {
                 1.0
             } else {
                 0.0
@@ -47,9 +47,9 @@ fn draw_points_wrapping(buf: &mut String, points: Vec<Vec2D>, _field_size: Vec2D
         .iter()
         .map(|point| point.y)
         .map(|y| {
-            if y >= _field_size.y {
+            if y >= field_size.y {
                 -1.0
-            } else if y < _field_size.y {
+            } else if y < field_size.y {
                 1.0
             } else {
                 0.0
@@ -63,32 +63,32 @@ fn draw_points_wrapping(buf: &mut String, points: Vec<Vec2D>, _field_size: Vec2D
             let translated_points = translate(
                 &points,
                 Vec2D {
-                    x: _field_size.x * x_wrap,
-                    y: _field_size.y * y_wrap,
+                    x: field_size.x * x_wrap,
+                    y: field_size.y * y_wrap,
                 },
             );
-            draw_points(buf, translated_points, _field_size);
+            draw_points(buf, translated_points);
         }
         let translated_points = translate(
             &points,
             Vec2D {
-                x: _field_size.x * x_wrap,
+                x: field_size.x * x_wrap,
                 y: 0.0,
             },
         );
-        draw_points(buf, translated_points, _field_size);
+        draw_points(buf, translated_points);
     }
     if y_wrap != 0.0 {
         let translated_points = translate(
             &points,
             Vec2D {
                 x: 0.0,
-                y: _field_size.y * y_wrap,
+                y: field_size.y * y_wrap,
             },
         );
-        draw_points(buf, translated_points, _field_size);
+        draw_points(buf, translated_points);
     }
-    draw_points(buf, points, _field_size);
+    draw_points(buf, points);
 }
 
 fn draw_object(
@@ -99,7 +99,7 @@ fn draw_object(
     offset: Vec2D,
     field_size: Vec2D,
 ) {
-    draw_points(
+    draw_points_wrapping(
         buf,
         points
             .iter()
@@ -152,7 +152,7 @@ fn render_ship(buf: &mut String, game: &Game) {
 
 fn render_bullet(buf: &mut String, bullet: &Bullet, field_size: Vec2D) {
     let tail = bullet.pos + bullet.speed.normalize().scale(5.0);
-    draw_points(buf, vec![bullet.pos, tail], field_size);
+    draw_points_wrapping(buf, vec![bullet.pos, tail], field_size);
 }
 
 fn render_asteroid(buf: &mut String, asteroid: &Asteroid, field_size: Vec2D) {
@@ -204,7 +204,7 @@ fn render_explosion(buf: &mut String, explosion: &Explosion, tick: u64, field_si
         let start = dir.scale(state * EXPLOSION_RADIUS) + explosion.pos;
         let end = dir.scale(state * EXPLOSION_RADIUS + EXPLOSION_PARTICLE_LENGTH * (1.0 + state))
             + explosion.pos;
-        draw_points(buf, vec![start, end], field_size);
+        draw_points_wrapping(buf, vec![start, end], field_size);
     }
 }
 
