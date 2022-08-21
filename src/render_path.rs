@@ -167,7 +167,7 @@ fn render_lives(buf: &mut String, lives: u64, field_size: &Vec2D) {
     const LIFE_STEP: f64 = 40.0;
     const UP_ANGLE: f64 = std::f64::consts::PI * -0.5;
     for l in 0..lives {
-        let y = -50.0;
+        let y = 50.0;
         let x = ((l + 1) as f64) * LIFE_STEP;
         draw_object(
             buf,
@@ -310,7 +310,7 @@ fn render_score(buf: &mut String, mut score: u64) {
             let p = Vec2D { x: p.x, y: p.y }.scale(DIGIT_SCALE)
                 + Vec2D {
                     x: DIGIT_RIGHTMOST + (idx as f64) * DIGIT_STEP,
-                    y: -DIGIT_SCALE * 5.0,
+                    y: DIGIT_SCALE * 5.0,
                 };
             draw(buf, i != 0, &p);
         }
