@@ -26,7 +26,7 @@ mod internals {
         }
     }
 
-    fn calculate_wrap(points: &Vec<Vec2D>, field_size: &Vec2D, x: bool) -> f64 {
+    fn calculate_wrap(points: &[Vec2D], field_size: &Vec2D, x: bool) -> f64 {
         let field_size = if x { field_size.x } else { field_size.y };
         points
             .iter()
@@ -40,21 +40,21 @@ mod internals {
                     None
                 }
             })
-            .nth(0)
+            .next()
             .unwrap_or_default()
     }
 
-    fn translate(points: &Vec<Vec2D>, translation: &Vec2D) -> Vec<Vec2D> {
+    fn translate(points: &[Vec2D], translation: &Vec2D) -> Vec<Vec2D> {
         points.iter().map(|&point| point + *translation).collect()
     }
 
     pub fn draw_points_wrapping(buf: &mut String, points: &Vec<Vec2D>, field_size: &Vec2D) {
-        let x_wrap = calculate_wrap(&points, &field_size, true);
-        let y_wrap = calculate_wrap(&points, &field_size, false);
+        let x_wrap = calculate_wrap(points, field_size, true);
+        let y_wrap = calculate_wrap(points, field_size, false);
         if x_wrap != 0.0 {
             if y_wrap != 0.0 {
                 let translated_points = translate(
-                    &points,
+                    points,
                     &Vec2D {
                         x: field_size.x * x_wrap,
                         y: field_size.y * y_wrap,
@@ -63,7 +63,7 @@ mod internals {
                 draw_points(buf, &translated_points);
             }
             let translated_points = translate(
-                &points,
+                points,
                 &Vec2D {
                     x: field_size.x * x_wrap,
                     y: 0.0,
@@ -73,7 +73,7 @@ mod internals {
         }
         if y_wrap != 0.0 {
             let translated_points = translate(
-                &points,
+                points,
                 &Vec2D {
                     x: 0.0,
                     y: field_size.y * y_wrap,
@@ -86,7 +86,7 @@ mod internals {
 
     pub fn draw_object(
         buf: &mut String,
-        points: &Vec<Vec2D>,
+        points: &[Vec2D],
         scale: f64,
         rotation: f64,
         offset: &Vec2D,
@@ -126,7 +126,7 @@ fn render_ship(buf: &mut String, game: &Game) {
     }
     draw_object(
         buf,
-        &SHIP_POINTS.to_vec(),
+        SHIP_POINTS,
         2.0,
         ship.angle,
         &ship.pos,
@@ -136,7 +136,7 @@ fn render_ship(buf: &mut String, game: &Game) {
     if inputs.is_down(InputIndex::Forward) || inputs.is_down(InputIndex::Backward) {
         draw_object(
             buf,
-            &FLARE.to_vec(),
+            FLARE,
             2.0,
             ship.angle,
             &ship.pos,
@@ -157,7 +157,7 @@ fn render_asteroid(buf: &mut String, asteroid: &Asteroid, field_size: &Vec2D) {
         .iter()
         .enumerate()
         .map(|(i, v)| v.rotate(angle * (i as f64)))
-        .collect();
+        .collect::<Vec<_>>();
     draw_object(
         buf,
         &asteroid_points,
@@ -174,14 +174,7 @@ fn render_lives(buf: &mut String, lives: u64, field_size: &Vec2D) {
     for l in 0..lives {
         let y = 50.0;
         let x = ((l + 1) as f64) * LIFE_STEP;
-        draw_object(
-            buf,
-            &SHIP_POINTS.to_vec(),
-            2.0,
-            UP_ANGLE,
-            &Vec2D { x, y },
-            field_size,
-        );
+        draw_object(buf, SHIP_POINTS, 2.0, UP_ANGLE, &Vec2D { x, y }, field_size);
     }
 }
 
