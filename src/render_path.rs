@@ -146,7 +146,7 @@ fn render_ship(buf: &mut String, game: &Game) {
 }
 
 fn render_bullet(buf: &mut String, bullet: &Bullet, field_size: &Vec2D) {
-    let tail = bullet.pos + bullet.speed.normalize().scale(5.0);
+    let tail = bullet.pos + bullet.speed.normalize().unwrap_or(Vec2D::zero()).scale(5.0);
     draw_points_wrapping(buf, &vec![bullet.pos, tail], field_size);
 }
 

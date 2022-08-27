@@ -62,8 +62,12 @@ impl Vec2D {
         self.x * other.y - self.y * other.x
     }
 
-    pub fn normalize(&self) -> Self {
-        self.scale(1.0 / self.len())
+    pub fn normalize(&self) -> Option<Self> {
+        if self.len_squared() == 0.0 {
+            None
+        } else {
+            Some(self.scale(1.0 / self.len()))
+        }
     }
 
     pub fn rotate(&self, angle: f64) -> Self {
