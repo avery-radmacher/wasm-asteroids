@@ -2,102 +2,107 @@ use crate::game::{Asteroid, Bullet, Explosion, Game, InputIndex};
 use crate::math::Vec2D;
 use std::fmt::Write;
 
-fn draw(buf: &mut String, line: bool, point: &Vec2D) {
-    write!(
-        buf,
-        "{}{:.2} {:.2} ",
-        if line { 'L' } else { 'M' },
-        point.x,
-        point.y
-    )
-    .expect("could not write string");
-}
+mod internals {
+    use super::*;
 
-fn draw_points(buf: &mut String, points: &Vec<Vec2D>) {
-    if points.is_empty() {
-        return;
+    fn draw(buf: &mut String, line: bool, point: &Vec2D) {
+        write!(
+            buf,
+            "{}{:.2} {:.2} ",
+            if line { 'L' } else { 'M' },
+            point.x,
+            point.y
+        )
+        .expect("could not write string");
     }
-    draw(buf, false, &points[0]);
-    for &point in &points[1..] {
-        draw(buf, true, &point);
-    }
-}
 
-fn calculate_wrap(points: &Vec<Vec2D>, field_size: &Vec2D, x: bool) -> f64 {
-    let field_size = if x { field_size.x } else { field_size.y };
-    points
-        .iter()
-        .map(|point| if x { point.x } else { point.y })
-        .filter_map(|x| {
-            if x >= field_size {
-                Some(-1.0)
-            } else if x < 0.0 {
-                Some(1.0)
-            } else {
-                None
+    fn draw_points(buf: &mut String, points: &Vec<Vec2D>) {
+        if points.is_empty() {
+            return;
+        }
+        draw(buf, false, &points[0]);
+        for &point in &points[1..] {
+            draw(buf, true, &point);
+        }
+    }
+
+    fn calculate_wrap(points: &Vec<Vec2D>, field_size: &Vec2D, x: bool) -> f64 {
+        let field_size = if x { field_size.x } else { field_size.y };
+        points
+            .iter()
+            .map(|point| if x { point.x } else { point.y })
+            .filter_map(|x| {
+                if x >= field_size {
+                    Some(-1.0)
+                } else if x < 0.0 {
+                    Some(1.0)
+                } else {
+                    None
+                }
+            })
+            .nth(0)
+            .unwrap_or_default()
+    }
+
+    fn translate(points: &Vec<Vec2D>, translation: &Vec2D) -> Vec<Vec2D> {
+        points.iter().map(|&point| point + *translation).collect()
+    }
+
+    pub fn draw_points_wrapping(buf: &mut String, points: &Vec<Vec2D>, field_size: &Vec2D) {
+        let x_wrap = calculate_wrap(&points, &field_size, true);
+        let y_wrap = calculate_wrap(&points, &field_size, false);
+        if x_wrap != 0.0 {
+            if y_wrap != 0.0 {
+                let translated_points = translate(
+                    &points,
+                    &Vec2D {
+                        x: field_size.x * x_wrap,
+                        y: field_size.y * y_wrap,
+                    },
+                );
+                draw_points(buf, &translated_points);
             }
-        })
-        .nth(0)
-        .unwrap_or_default()
-}
-
-fn translate(points: &Vec<Vec2D>, translation: &Vec2D) -> Vec<Vec2D> {
-    points.iter().map(|&point| point + *translation).collect()
-}
-
-fn draw_points_wrapping(buf: &mut String, points: &Vec<Vec2D>, field_size: &Vec2D) {
-    let x_wrap = calculate_wrap(&points, &field_size, true);
-    let y_wrap = calculate_wrap(&points, &field_size, false);
-    if x_wrap != 0.0 {
-        if y_wrap != 0.0 {
             let translated_points = translate(
                 &points,
                 &Vec2D {
                     x: field_size.x * x_wrap,
+                    y: 0.0,
+                },
+            );
+            draw_points(buf, &translated_points);
+        }
+        if y_wrap != 0.0 {
+            let translated_points = translate(
+                &points,
+                &Vec2D {
+                    x: 0.0,
                     y: field_size.y * y_wrap,
                 },
             );
             draw_points(buf, &translated_points);
         }
-        let translated_points = translate(
-            &points,
-            &Vec2D {
-                x: field_size.x * x_wrap,
-                y: 0.0,
-            },
-        );
-        draw_points(buf, &translated_points);
+        draw_points(buf, points);
     }
-    if y_wrap != 0.0 {
-        let translated_points = translate(
-            &points,
-            &Vec2D {
-                x: 0.0,
-                y: field_size.y * y_wrap,
-            },
-        );
-        draw_points(buf, &translated_points);
-    }
-    draw_points(buf, points);
-}
 
-fn draw_object(
-    buf: &mut String,
-    points: &Vec<Vec2D>,
-    scale: f64,
-    rotation: f64,
-    offset: &Vec2D,
-    field_size: &Vec2D,
-) {
-    draw_points_wrapping(
-        buf,
-        &points
-            .iter()
-            .map(|p| p.scale(scale).rotate(rotation) + *offset)
-            .collect(),
-        field_size,
-    );
+    pub fn draw_object(
+        buf: &mut String,
+        points: &Vec<Vec2D>,
+        scale: f64,
+        rotation: f64,
+        offset: &Vec2D,
+        field_size: &Vec2D,
+    ) {
+        draw_points_wrapping(
+            buf,
+            &points
+                .iter()
+                .map(|p| p.scale(scale).rotate(rotation) + *offset)
+                .collect(),
+            field_size,
+        );
+    }
 }
+use internals::*;
 
 const SHIP_POINTS: &[Vec2D] = &[
     Vec2D { x: 10.0, y: 0.0 },
