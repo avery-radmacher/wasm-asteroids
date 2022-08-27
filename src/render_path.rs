@@ -292,7 +292,7 @@ const VECTOR_DIGITS: &[&[Vec2D]] = &[
     ],
 ];
 
-fn render_score(buf: &mut String, mut score: u64) {
+fn render_score(buf: &mut String, mut score: u64, field_size: &Vec2D) {
     let mut digits = Vec::new();
     while score > 0 {
         digits.push(score % 10);
@@ -314,7 +314,7 @@ fn render_score(buf: &mut String, mut score: u64) {
             .iter()
             .map(|&p| (p + offset).scale(DIGIT_SCALE))
             .collect();
-        draw_points(buf, &points);
+        draw_points_wrapping(buf, &points, field_size);
     }
 }
 
@@ -331,5 +331,5 @@ pub fn render_game(buf: &mut String, game: &Game) {
     for explosion in game.explosions.iter() {
         render_explosion(buf, explosion, game.tick, &field_size);
     }
-    render_score(buf, game.score);
+    render_score(buf, game.score, &field_size);
 }
