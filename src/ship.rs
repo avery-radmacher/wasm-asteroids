@@ -23,8 +23,12 @@ impl Ship {
 
     pub fn tick(&mut self, inputs: &Inputs, config: &Config) {
         // drag
-        let drag = self.speed.dot(self.speed) * config.drag;
-        self.speed -= self.speed.scale(drag * config.delta_t);
+        let drag = self.speed.len_squared() * config.drag;
+        self.speed -= self
+            .speed
+            .normalize()
+            .unwrap_or(Vec2D::zero())
+            .scale(drag * config.delta_t);
 
         let angular_drag = self.angular_speed * config.angular_drag;
         self.angular_speed -= angular_drag * config.delta_t;
