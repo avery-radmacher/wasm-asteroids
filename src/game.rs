@@ -107,7 +107,7 @@ impl Bullet {
         let direction = Vec2D::one().rotate(ship.angle);
         Bullet {
             pos: ship.pos + direction.scale(20.0),
-            speed: direction.scale(config.bullet_speed),
+            speed: ship.speed + direction.scale(config.bullet_speed),
             lifetime: game.tick + (config.bullet_lifetime / config.delta_t) as u64,
             dead: false,
             source,
