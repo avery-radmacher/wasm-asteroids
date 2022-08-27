@@ -31,10 +31,10 @@ mod internals {
         points
             .iter()
             .map(|point| if x { point.x } else { point.y })
-            .filter_map(|x| {
-                if x >= field_size {
+            .filter_map(|coord| {
+                if coord >= field_size {
                     Some(-1.0)
-                } else if x < 0.0 {
+                } else if coord < 0.0 {
                     Some(1.0)
                 } else {
                     None
