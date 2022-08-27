@@ -62,7 +62,7 @@ impl Config {
             delta_t: 1.0 / 60.0,
             field_size: Vec2D {
                 x: 1280.0,
-                y: 720.0,
+                y: 820.0,
             },
             key_binds: DEFAULT_KEYBINDS.to_vec(),
         }
