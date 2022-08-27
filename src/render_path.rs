@@ -305,16 +305,13 @@ fn render_score(buf: &mut String, mut score: u64, field_size: &Vec2D) {
     const DIGIT_STEP: f64 = -3.0;
     const DIGIT_RIGHTMOST: f64 = 120.0;
     for (idx, d) in digits.iter().enumerate() {
-        let digit = VECTOR_DIGITS[*d as usize];
+        let digit = VECTOR_DIGITS[*d as usize].to_vec();
         let offset = Vec2D {
             x: DIGIT_RIGHTMOST + (idx as f64) * DIGIT_STEP,
             y: 5.0,
-        };
-        let points = digit
-            .iter()
-            .map(|&p| (p + offset).scale(DIGIT_SCALE))
-            .collect();
-        draw_points_wrapping(buf, &points, field_size);
+        }
+        .scale(DIGIT_SCALE);
+        draw_object(buf, &digit, DIGIT_SCALE, 0.0, &offset, field_size);
     }
 }
 
