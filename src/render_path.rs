@@ -307,7 +307,7 @@ fn render_score(buf: &mut String, mut score: u64) {
     for (idx, d) in digits.iter().enumerate() {
         let digit = VECTOR_DIGITS[*d as usize];
         for (i, p) in digit.iter().enumerate() {
-            let p = Vec2D { x: p.x, y: p.y }.scale(DIGIT_SCALE)
+            let p = p.scale(DIGIT_SCALE)
                 + Vec2D {
                     x: DIGIT_RIGHTMOST + (idx as f64) * DIGIT_STEP,
                     y: DIGIT_SCALE * 5.0,
