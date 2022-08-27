@@ -302,16 +302,17 @@ fn render_score(buf: &mut String, mut score: u64) {
         digits.push(0);
     }
     const DIGIT_SCALE: f64 = 10.0;
-    const DIGIT_STEP: f64 = -30.0;
-    const DIGIT_RIGHTMOST: f64 = 1200.0;
+    const DIGIT_STEP: f64 = -3.0;
+    const DIGIT_RIGHTMOST: f64 = 120.0;
     for (idx, d) in digits.iter().enumerate() {
         let digit = VECTOR_DIGITS[*d as usize];
         for (i, p) in digit.iter().enumerate() {
-            let p = p.scale(DIGIT_SCALE)
+            let p = (*p
                 + Vec2D {
                     x: DIGIT_RIGHTMOST + (idx as f64) * DIGIT_STEP,
-                    y: DIGIT_SCALE * 5.0,
-                };
+                    y: 5.0,
+                })
+            .scale(DIGIT_SCALE);
             draw(buf, i != 0, &p);
         }
     }
